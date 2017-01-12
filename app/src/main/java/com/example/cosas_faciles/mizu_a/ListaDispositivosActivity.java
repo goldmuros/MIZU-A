@@ -1,8 +1,10 @@
 package com.example.cosas_faciles.mizu_a;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothSocket;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -10,7 +12,11 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.BundleCompat;
+import android.support.v4.os.ParcelableCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -20,8 +26,12 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.IOException;
+import java.io.Serializable;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Set;
+import java.util.UUID;
 
 /**
  * Created by Durgrim on 4/12/2016.
@@ -44,6 +54,8 @@ public class ListaDispositivosActivity extends AppCompatActivity {
 
     private ArrayList<BluetoothDevice> arrayDispositivosVincuados = new ArrayList<BluetoothDevice>();
     private ArrayList<BluetoothDevice> arrayDispositivosDisponibles = new ArrayList<BluetoothDevice>();
+
+    private ProgressDialog progresoBuscando, progresoVinculando;//Mensaje para buscar dispositivos
 
     // Instanciamos un BroadcastReceiver que se encargara de detectar si el estado
     // del Bluetooth del dispositivo ha cambiado mediante su handler onReceive
@@ -98,11 +110,11 @@ public class ListaDispositivosActivity extends AppCompatActivity {
                     }
 
                     BluetoothDevice dispositivo = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                    dispositivosDisponiblesArrayAdapter.add(dispositivo.getName());
-                    arrayDispositivosDisponibles.add(dispositivo);
-                    String descripcionDispositivo = dispositivo.getName() + " [" + dispositivo.getAddress() + "]";
 
-                    Toast.makeText(getBaseContext(), "Detectado: " + R.string.FinBusqueda, Toast.LENGTH_SHORT).show();
+                    //if(dispositivo.getName().contains("MIZU")){
+                        dispositivosDisponiblesArrayAdapter.add(dispositivo.getName());
+                        arrayDispositivosDisponibles.add(dispositivo);
+                    //}
 
                     break;
                 }
@@ -116,11 +128,22 @@ public class ListaDispositivosActivity extends AppCompatActivity {
                         listaDispositivosDisponibles.setAdapter(dispositivosDisponiblesArrayAdapter);
                         layoutDispositivosDisponibles.setVisibility(View.VISIBLE);
                         btnBuscarDispositivos.setVisibility(View.GONE);
-                        Toast.makeText(getBaseContext(), R.string.FinBusqueda, Toast.LENGTH_SHORT).show();
                     }
 
+                    btAdapter.cancelDiscovery();
+
+                    progresoBuscando.dismiss();
                     break;
                 }
+                /*case BluetoothDevice.ACTION_BOND_STATE_CHANGED:{
+                    final int state        = intent.getIntExtra(BluetoothDevice.EXTRA_BOND_STATE, BluetoothDevice.ERROR);
+                    final int prevState    = intent.getIntExtra(BluetoothDevice.EXTRA_PREVIOUS_BOND_STATE, BluetoothDevice.ERROR);
+
+                    if (state == BluetoothDevice.BOND_BONDED && prevState == BluetoothDevice.BOND_BONDING) {
+                       progresoVinculando.dismiss();
+                    }
+                    break;
+                }*/
                 default:
                     break;
             }
@@ -133,7 +156,11 @@ public class ListaDispositivosActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         //Cargamos el layout de donde se van a tomar los elementos de la vista
-        setContentView(R.layout.activity_dispositivos_list);
+        setContentView(R.layout.activity_lista_dispositivos);
+
+        //Definimos la toolbar
+//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+//        setSupportActionBar(toolbar);
 
         configurarControles();
 
@@ -160,9 +187,9 @@ public class ListaDispositivosActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (btAdapter.isEnabled()) {
-                    btnBluetooth.setText("Conectar");
+                    btnBluetooth.setText(R.string.Conectar);
                 } else {
-                    btnBluetooth.setText("Desconectar");
+                    btnBluetooth.setText(R.string.Desconectar);
 
                     Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
                     startActivityForResult(enableBtIntent, 1);
@@ -209,7 +236,7 @@ public class ListaDispositivosActivity extends AppCompatActivity {
                 // Iniciamos la busqueda de dispositivos
                 if (btAdapter.startDiscovery())
                     // Mostramos el mensaje de que el proceso ha comenzado
-                    Toast.makeText(ListaDispositivosActivity.this, R.string.IniciandoDescubrimiento, Toast.LENGTH_SHORT).show();
+                    progresoBuscando = ProgressDialog.show(ListaDispositivosActivity.this, getString(R.string.IniciandoDescubrimiento), getString(R.string.Espere));  //show a progress dialog
                 else
                     Toast.makeText(ListaDispositivosActivity.this, R.string.ErrorIniciandoDescubrimiento, Toast.LENGTH_SHORT).show();
             }
@@ -240,17 +267,26 @@ public class ListaDispositivosActivity extends AppCompatActivity {
 
                 BluetoothDevice dispositivo = (BluetoothDevice) arrayDispositivosDisponibles.get(posicion);
 
+                if(BluetoothDevice.BOND_NONE == dispositivo.getBondState()){
+                    progresoVinculando = ProgressDialog.show(ListaDispositivosActivity.this, getString(R.string.Vinculando), getString(R.string.Espere));  //show a progress dialog
+
+                    pairDevice(dispositivo);
+                }
+
                 Toast.makeText(ListaDispositivosActivity.this,
                         "Nombre " + dispositivo.getName() + " Direccion: " + dispositivo.getAddress(), Toast.LENGTH_SHORT).show();
 
-                //Preparamos los parametros para pasarselos al siguiente activity(pantalla)
-                Intent intent = new Intent(ListaDispositivosActivity.this, ListaProgramasActivity.class);
-                intent.putExtra("nombreBluetooth", dispositivo.getName());
-                intent.putExtra("direccionMAC", dispositivo.getAddress());
-
-                startActivity(intent);
             }
         });
+    }
+
+    private void pairDevice(BluetoothDevice device) {
+        try {
+            Method method = device.getClass().getMethod("createBond", (Class[]) null);
+            method.invoke(device, (Object[]) null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     //Busca y carga en la lista los dispostivos que estan vinculados
@@ -264,10 +300,12 @@ public class ListaDispositivosActivity extends AppCompatActivity {
         // Agragamos los dispositivos vinculados al array corespondiente
         if (dispositivosVinculados.size() > 0) {
             for (BluetoothDevice dispositivo : dispositivosVinculados) {
-                dispositivosVinculadosArrayAdapter.add(dispositivo.getName());
-
-                //Para obtener los datos del dispositivo sin necesidad de ponerlos en la lista
-                arrayDispositivosVincuados.add(dispositivo);
+                //Habiliitar cuando se tenga un mizu cerca
+                if(dispositivo.getName().contains("MIZU")) {
+                    dispositivosVinculadosArrayAdapter.add(dispositivo.getName());
+                    //Para obtener los datos del dispositivo sin necesidad de ponerlos en la lista
+                    arrayDispositivosVincuados.add(dispositivo);
+                }
             }
         } else {
             String noHayDispositivos = getResources().getText(R.string.no_vinculados).toString();
@@ -344,8 +382,8 @@ public class ListaDispositivosActivity extends AppCompatActivity {
         };
 
         // Asignamos los botones positivo y negativo a sus respectivos listeners
-        alertDialogBuilder.setPositiveButton(R.string.SalirDesconectar, listenerOk);
-        alertDialogBuilder.setNegativeButton(R.string.Salir, listenerSalir);
+        alertDialogBuilder.setPositiveButton(R.string.Si, listenerOk);
+        alertDialogBuilder.setNegativeButton(R.string.No, listenerSalir);
 
         return alertDialogBuilder.create();
     }
