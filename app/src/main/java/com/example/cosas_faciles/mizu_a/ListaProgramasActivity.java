@@ -16,7 +16,6 @@ import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,7 +30,8 @@ import java.util.UUID;
  * Created by Durgrim on 3/12/2016.
  */
 
-public class ListaProgramasActivity extends AppCompatActivity {
+public class ListaProgramasActivity extends AppCompatActivity
+        implements FragmentoListaProgramas.Callbacks {
     // SPP UUID service - this should work for most devices
     private static UUID BTMODULEUUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
     ;
@@ -107,9 +107,7 @@ public class ListaProgramasActivity extends AppCompatActivity {
         //Se realiza la conexion con el BT
         //conectarBT();
 
-        List<Programa> listaProgramas = new ArrayList<>();
-
-        listaProgramas.add(new Programa("Lunes", "20:30", "30 min", "S"));
+        /*List<Programa> listaProgramas = new ArrayList<>();
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -119,7 +117,7 @@ public class ListaProgramasActivity extends AppCompatActivity {
 
         ListView listViewProgramas = (ListView) findViewById(R.id.listaProgramas);
 
-        listViewProgramas.setAdapter(new ProgramaAdapter(listaProgramas));
+        listViewProgramas.setAdapter(new ProgramaAdapter(listaProgramas));*/
     }
 
     @Override
@@ -127,6 +125,11 @@ public class ListaProgramasActivity extends AppCompatActivity {
         super.onPause();
 
         //desconectarBT();
+    }
+
+    //Implementamos la interfaz de FragmentoListaProgramas
+    @Override
+    public void onProgramaSeleccionado(Programa programa){
 
     }
 
@@ -161,7 +164,7 @@ public class ListaProgramasActivity extends AppCompatActivity {
     }
 
     //Realiza la conexion con el Bluetooth
-    private void conectarBT(){
+    private void conectarBT() {
         progresoConexion = ProgressDialog.show(ListaProgramasActivity.this, getString(R.string.Conexion), getString(R.string.Espere));  //show a progress dialog
         //Se crea un dispostivo y se le setea la dirección MAC
         BluetoothDevice dispositivo = btAdapter.getRemoteDevice(direccionMAC);
@@ -194,7 +197,7 @@ public class ListaProgramasActivity extends AppCompatActivity {
         progresoConexion.dismiss();
     }
 
-    private void desconectarBT(){
+    private void desconectarBT() {
         try {
             //Cuando nos vamos del activity no olvidarnos de cerrar el socket
             btSocket.close();

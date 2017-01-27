@@ -28,10 +28,10 @@
             android:text="@string/EncendidoManual" />
 
         <LinearLayout
+            android:id="@+id/layoutEncendidoManual"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="2"
-            android:id="@+id/layoutEncendidoManual">
+            android:layout_weight="2">
 
             <Button
                 android:id="@+id/btnEncender"
@@ -52,8 +52,25 @@
             android:id="@+id/layoutFragments"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_below="@id/layoutEncendidoManual">
+            android:layout_below="@id/layoutEncendidoManual"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/txtListaProgramas"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:text="@string/ListaProgramas" />
+
+            <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:id="@+id/fragmentListaProgramas"
+                android:name="com.example.cosas_faciles.mizu_a.FragmentoListaProgramas"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@id/txtListaProgramas"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                tools:layout="@android:layout/list_content" />
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

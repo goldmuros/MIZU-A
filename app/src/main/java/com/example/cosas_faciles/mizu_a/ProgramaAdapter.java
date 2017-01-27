@@ -26,8 +26,8 @@ public class ProgramaAdapter extends BaseAdapter {
     }
 
     @Override
-    public Object getItem(int position) {
-        return null;
+    public Object getItem(int posicion) {
+        return programas.get(posicion);
     }
 
     @Override
