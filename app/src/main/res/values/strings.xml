@@ -5,6 +5,11 @@
     <string name="Desconectar">Desconectar</string>
     <string name="BuscarDispositivo">Buscar</string>
 
+    <string name="Bluetooth">Bluetooth</string>
+
+    <string name="ListaVinculados">Lista de dispositivos vinculados</string>
+    <string name="ListaDisponibles">Lista de dispositivos disponibles</string>
+
     <string name="no_vinculados">No hay dispositivos Vinculados</string>
     <string name="buscandoDispositivo">Buscando dispositivos disponibles</string>
 
@@ -19,4 +24,13 @@
     <string name="No">No</string>
     <string name="Cancelar">Cancelar</string>
     <string name="MsgConfirmarApagar">¿Desea apagar el BLUETOOTH?</string>
+
+    <string name="Encender">Encender</string>
+    <string name="Apagar">Apagar</string>
+
+    <string name="EncendidoManual">Encendido manual</string>
+    <string name="ListaProgramas">Lista de programas</string>
+
+    <string name="Activo">Activo</string>
+    <string name="Suspender">Suspender</string>
 </resources>

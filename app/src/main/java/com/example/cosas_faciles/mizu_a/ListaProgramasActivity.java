@@ -9,17 +9,22 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -28,7 +33,8 @@ import java.util.UUID;
 
 public class ListaProgramasActivity extends AppCompatActivity {
     // SPP UUID service - this should work for most devices
-    private static UUID BTMODULEUUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");;
+    private static UUID BTMODULEUUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
+    ;
     //Otras variables
     private static String nombreBluetooth;
     private static String direccionMAC;
@@ -52,8 +58,6 @@ public class ListaProgramasActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_lista_programas);
 
-
-
         //Obtenemos los parametros del activity/pantalla anterior (ListaDispositivosActivity)
         nombreBluetooth = getIntent().getExtras().getString("nombreBluetooth");
         direccionMAC = getIntent().getExtras().getString("direccionMAC");
@@ -61,8 +65,6 @@ public class ListaProgramasActivity extends AppCompatActivity {
         TextView textViewNombreDispositivo = (TextView) findViewById(R.id.textoNombreDispositivo);
 
         textViewNombreDispositivo.setText(nombreBluetooth);
-
-        //new ConnectBT().execute(); //Call the class to connect
 
         btEncender = (Button) findViewById(R.id.btnEncender);
         btApagar = (Button) findViewById(R.id.btnApagar);
@@ -99,61 +101,33 @@ public class ListaProgramasActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-
-
-
-        //I send a character when resuming.beginning transmission to check device is connected
-        //If it is not an exception will be thrown in the write method and finish() will be called
-        //hiloConectado.write("x");
-    }
-
-    @Override
     protected void onResume() {
         super.onResume();
 
-        progresoConexion = ProgressDialog.show(ListaProgramasActivity.this, getString(R.string.Conexion), getString(R.string.Espere));  //show a progress dialog
-        //Se crea un dispostivo y se le setea la dirección MAC
-        BluetoothDevice dispositivo = btAdapter.getRemoteDevice(direccionMAC);
+        //Se realiza la conexion con el BT
+        //conectarBT();
 
-        try {
-            btSocket = crearBluetoothSocket(dispositivo);
-        } catch (IOException e) {
-            Toast.makeText(getBaseContext(), "La creacción del Socket fallo", Toast.LENGTH_LONG).show();
-        }
+        List<Programa> listaProgramas = new ArrayList<>();
 
-        // Establecemos la conexion Bluetooth socket
-        try {
-            btSocket.connect();
-        } catch (IOException e) {
-            try {
-                btSocket.close();
-                Log.println(Log.ERROR, "hola", e.getMessage());
-                progresoConexion.dismiss();
-                finish();
-            } catch (IOException e2) {
-                //insert code to deal with this
-                progresoConexion.dismiss();
-            }
-        }
+        listaProgramas.add(new Programa("Lunes", "20:30", "30 min", "S"));
 
-        //Asociamos el hilo con el socket
-        hiloConectado = new ConnectedThread(btSocket);
-        hiloConectado.start();//Lo iniciamos
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
-        progresoConexion.dismiss();
+        FragmentoListaProgramas fragmentListaProgramas = new FragmentoListaProgramas();
+        fragmentTransaction.replace(R.id.layoutFragments, fragmentListaProgramas).commit();
+
+        ListView listViewProgramas = (ListView) findViewById(R.id.listaProgramas);
+
+        listViewProgramas.setAdapter(new ProgramaAdapter(listaProgramas));
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        try {
-            //Cuando nos vamos del activity no olvidarnos de cerrar el socket
-            btSocket.close();
-        } catch (IOException e) {
-            //insert code to deal with this
-        }
+
+        //desconectarBT();
+
     }
 
     private BluetoothSocket crearBluetoothSocket(BluetoothDevice device) throws IOException {
@@ -186,9 +160,47 @@ public class ListaProgramasActivity extends AppCompatActivity {
         return uuid;
     }
 
-    // fast way to call Toast
-    private void msg(String s){
-        Toast.makeText(getApplicationContext(),s,Toast.LENGTH_LONG).show();
+    //Realiza la conexion con el Bluetooth
+    private void conectarBT(){
+        progresoConexion = ProgressDialog.show(ListaProgramasActivity.this, getString(R.string.Conexion), getString(R.string.Espere));  //show a progress dialog
+        //Se crea un dispostivo y se le setea la dirección MAC
+        BluetoothDevice dispositivo = btAdapter.getRemoteDevice(direccionMAC);
+
+        try {
+            btSocket = crearBluetoothSocket(dispositivo);
+        } catch (IOException e) {
+            Toast.makeText(getBaseContext(), "La creacción del Socket fallo", Toast.LENGTH_LONG).show();
+        }
+
+        // Establecemos la conexion Bluetooth socket
+        try {
+            btSocket.connect();
+        } catch (IOException e) {
+            try {
+                btSocket.close();
+                Log.println(Log.ERROR, "hola", e.getMessage());
+                progresoConexion.dismiss();
+                finish();
+            } catch (IOException e2) {
+                //insert code to deal with this
+                progresoConexion.dismiss();
+            }
+        }
+
+        //Asociamos el hilo con el socket
+        hiloConectado = new ConnectedThread(btSocket);
+        hiloConectado.start();//Lo iniciamos
+
+        progresoConexion.dismiss();
+    }
+
+    private void desconectarBT(){
+        try {
+            //Cuando nos vamos del activity no olvidarnos de cerrar el socket
+            btSocket.close();
+        } catch (IOException e) {
+            //insert code to deal with this
+        }
     }
 
     /*private class ConnectBT extends AsyncTask<Void, Void, Void>  // UI thread
@@ -257,7 +269,7 @@ public class ListaProgramasActivity extends AppCompatActivity {
             mmOutStream = tmpOut;
         }
 
-        public void run(){
+        public void run() {
 
         }
 

@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothSocket;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -12,11 +11,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.BundleCompat;
-import android.support.v4.os.ParcelableCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -25,13 +20,10 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import java.io.IOException;
-import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Set;
-import java.util.UUID;
+
 
 /**
  * Created by Durgrim on 4/12/2016.
@@ -52,8 +44,8 @@ public class ListaDispositivosActivity extends AppCompatActivity {
     private ArrayAdapter<String> dispositivosVinculadosArrayAdapter;
     private ArrayAdapter<String> dispositivosDisponiblesArrayAdapter;
 
-    private ArrayList<BluetoothDevice> arrayDispositivosVincuados = new ArrayList<BluetoothDevice>();
-    private ArrayList<BluetoothDevice> arrayDispositivosDisponibles = new ArrayList<BluetoothDevice>();
+    private ArrayList<BluetoothDevice> arrayDispositivosVincuados = new ArrayList<>();
+    private ArrayList<BluetoothDevice> arrayDispositivosDisponibles = new ArrayList<>();
 
     private ProgressDialog progresoBuscando, progresoVinculando;//Mensaje para buscar dispositivos
 
@@ -105,8 +97,8 @@ public class ListaDispositivosActivity extends AppCompatActivity {
                 // este fragmento de codigo
                 case BluetoothDevice.ACTION_FOUND: {
                     if (dispositivosDisponiblesArrayAdapter == null) {
-                        dispositivosDisponiblesArrayAdapter = new ArrayAdapter<String>(ListaDispositivosActivity.this, R.layout.nombre_dispositivo);
-                        arrayDispositivosDisponibles = new ArrayList<BluetoothDevice>();
+                        dispositivosDisponiblesArrayAdapter = new ArrayAdapter<>(ListaDispositivosActivity.this, R.layout.nombre_dispositivo);
+                        arrayDispositivosDisponibles = new ArrayList<>();
                     }
 
                     BluetoothDevice dispositivo = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
@@ -205,8 +197,8 @@ public class ListaDispositivosActivity extends AppCompatActivity {
         btAdapter = BluetoothAdapter.getDefaultAdapter();//Obtenemos el BT adapter
 
         //Inicializamos los array adapter para las listas de dispositivos
-        dispositivosVinculadosArrayAdapter = new ArrayAdapter<String>(this, R.layout.nombre_dispositivo);
-        dispositivosDisponiblesArrayAdapter = new ArrayAdapter<String>(this, R.layout.nombre_dispositivo);
+        dispositivosVinculadosArrayAdapter = new ArrayAdapter<>(this, R.layout.nombre_dispositivo);
+        dispositivosDisponiblesArrayAdapter = new ArrayAdapter<>(this, R.layout.nombre_dispositivo);
 
         //Se asignan los arrays a las listas
         listaDispositivosVinculados.setAdapter(dispositivosVinculadosArrayAdapter);
@@ -218,7 +210,7 @@ public class ListaDispositivosActivity extends AppCompatActivity {
             //Si no esta hablitado el Bluetooth le pedimos al usuario que lo conecte
             if (btAdapter.isEnabled()) {
                 buscarDispositivosVinculados();
-                btnBluetooth.setText("Desconectar");
+                btnBluetooth.setText(R.string.Desconectar);
             }
         }
 
@@ -265,7 +257,7 @@ public class ListaDispositivosActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int posicion, long id) {
 
-                BluetoothDevice dispositivo = (BluetoothDevice) arrayDispositivosDisponibles.get(posicion);
+                BluetoothDevice dispositivo = arrayDispositivosDisponibles.get(posicion);
 
                 if(BluetoothDevice.BOND_NONE == dispositivo.getBondState()){
                     progresoVinculando = ProgressDialog.show(ListaDispositivosActivity.this, getString(R.string.Vinculando), getString(R.string.Espere));  //show a progress dialog

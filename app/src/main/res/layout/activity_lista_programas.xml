@@ -25,27 +25,35 @@
         <TextView
             android:layout_width="150dp"
             android:layout_height="wrap_content"
-            android:text="ENCENDIDO MANUAL" />
+            android:text="@string/EncendidoManual" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="2">
+            android:layout_weight="2"
+            android:id="@+id/layoutEncendidoManual">
 
             <Button
                 android:id="@+id/btnEncender"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="ENCENDER" />
+                android:text="@string/Encender" />
 
             <Button
                 android:id="@+id/btnApagar"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="APAGAR" />
+                android:text="@string/Apagar" />
         </LinearLayout>
 
+        <LinearLayout
+            android:id="@+id/layoutFragments"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_below="@id/layoutEncendidoManual">
+        </LinearLayout>
     </LinearLayout>
 </LinearLayout>
