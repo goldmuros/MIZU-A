@@ -33,4 +33,16 @@
 
     <string name="Activo">Activo</string>
     <string name="Suspender">Suspender</string>
+
+    <string name="Dia">Día</string>
+
+    <string-array name="aTiempoRiego">
+        <item>5 min</item>
+        <item>10 min</item>
+        <item>15 min</item>
+        <item>30 min</item>
+        <item>1 hs</item>
+        <item>1 hs 30 min</item>
+        <item>2 hs</item>
+    </string-array>
 </resources>

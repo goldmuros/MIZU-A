@@ -71,6 +71,26 @@
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
                 tools:layout="@android:layout/list_content" />
+
+            <LinearLayout
+                android:id="@+id/layoutBotonesProgramas"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/fragmentListaProgramas"
+                android:orientation="horizontal">
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/btnBorrarPrograma"
+                    android:text="Eliminar"/>
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/btnAnadirPrograma"
+                    android:text="Añadir"/>
+            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

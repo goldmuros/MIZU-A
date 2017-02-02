@@ -16,6 +16,7 @@ import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -39,8 +40,8 @@ public class ListaProgramasActivity extends AppCompatActivity
     private static String nombreBluetooth;
     private static String direccionMAC;
     //Objetos de la pantalla
-    private Button btEncender;
-    private Button btApagar;
+    private Button btEncender, btApagar, btBorrarPrograma, btAnadirPrograma;
+    private CheckBox chbPrograma;
     //Bluetooth
     private BluetoothAdapter btAdapter = null;
     private BluetoothSocket btSocket = null;
@@ -67,8 +68,6 @@ public class ListaProgramasActivity extends AppCompatActivity
         textViewNombreDispositivo.setText(nombreBluetooth);
 
         btEncender = (Button) findViewById(R.id.btnEncender);
-        btApagar = (Button) findViewById(R.id.btnApagar);
-
         btEncender.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 //Encendemos el regador
@@ -78,12 +77,34 @@ public class ListaProgramasActivity extends AppCompatActivity
             }
         });
 
+        btApagar = (Button) findViewById(R.id.btnApagar);
         btApagar.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 //Apagamos el regador
                 hiloConectado.write("L");
                 Toast.makeText(ListaProgramasActivity.this,
                         "APAGADO", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        btAnadirPrograma = (Button) findViewById(R.id.btnAnadirPrograma);
+        btAnadirPrograma.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                //Hacer la llamada al otro fragment
+                Toast.makeText(ListaProgramasActivity.this,
+                        "Anadir", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        chbPrograma = (CheckBox) findViewById(R.id.chbPrograma);
+
+
+        btBorrarPrograma = (Button) findViewById(R.id.btnBorrarPrograma);
+        btBorrarPrograma.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                //Hacer la llamada al otro fragment
+                Toast.makeText(ListaProgramasActivity.this,
+                        "Borrar", Toast.LENGTH_SHORT).show();
             }
         });
 
