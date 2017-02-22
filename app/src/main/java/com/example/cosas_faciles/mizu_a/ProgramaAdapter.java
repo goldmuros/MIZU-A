@@ -5,6 +5,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
 import java.util.List;
@@ -47,6 +48,9 @@ public class ProgramaAdapter extends BaseAdapter {
 
         Programa programa = (Programa) getItem(posicion);
 
+        CheckBox chbPrograma = (CheckBox) view.findViewById(R.id.chbPrograma);
+
+
         TextView dia = (TextView) view.findViewById(R.id.diaListaPrograma);
         dia.setText(String.valueOf(programa.getDia()));
 
@@ -54,7 +58,7 @@ public class ProgramaAdapter extends BaseAdapter {
         hora.setText(String.valueOf(programa.getHora()));
 
         TextView duracion = (TextView) view.findViewById(R.id.duracionListaprograma);
-        duracion.setText(String.valueOf(programa.getTiempo()));
+        duracion.setText(String.valueOf(programa.getDuracion()));
 
         Button btnSuspender = (Button) view.findViewById(R.id.btnSuspender);
         if(programa.getActivo().equals("S")){

@@ -59,7 +59,7 @@ public class FragmentoListaProgramas extends Fragment {
     }
 
     public interface Callbacks {
-        public void onProgramaSeleccionado(Programa programa);
+        void onProgramaSeleccionado(Programa programa);
     }
 
 }

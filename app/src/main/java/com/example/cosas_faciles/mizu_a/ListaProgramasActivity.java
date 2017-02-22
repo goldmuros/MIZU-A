@@ -9,8 +9,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.telephony.TelephonyManager;
 import android.util.Log;
@@ -23,16 +21,18 @@ import android.widget.Toast;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
+
+//import android.support.v7.widget.AppCompatCheckBox;
 
 /**
  * Created by Durgrim on 3/12/2016.
+ * <p>
+ * Se comenta todo lo relacionado con los fragmento, hay que refactorizar para que funcionen los fragmentos
  */
 
-public class ListaProgramasActivity extends AppCompatActivity
-        implements FragmentoListaProgramas.Callbacks {
+public class ListaProgramasActivity extends AppCompatActivity {
+    /*implements FragmentoListaProgramas.Callbacks {*/
     // SPP UUID service - this should work for most devices
     private static UUID BTMODULEUUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
     ;
@@ -50,14 +50,22 @@ public class ListaProgramasActivity extends AppCompatActivity
     //Es para la conexion async, borrar si no se usa
     private ProgressDialog progresoConexion;
 
+    //Quitarlo cuando se implementen los fragmentos
+    private ListView listaProgramas;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        //BTMODULEUUID = generarUUID();
-        //BTMODULEUUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
+
+        //BTMODULEUUID = generarUUID(); //Se comenta porque aun no funciona, revisarlo cuando se tenga tiempo
+
+        BTMODULEUUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
 
         setContentView(R.layout.activity_lista_programas);
+
+        //Quitarlo cuando se implementen los fragmentos
+        listaProgramas = (ListView) findViewById(R.id.listaProgramas);
 
         //Obtenemos los parametros del activity/pantalla anterior (ListaDispositivosActivity)
         nombreBluetooth = getIntent().getExtras().getString("nombreBluetooth");
@@ -93,6 +101,22 @@ public class ListaProgramasActivity extends AppCompatActivity
                 //Hacer la llamada al otro fragment
                 Toast.makeText(ListaProgramasActivity.this,
                         "Anadir", Toast.LENGTH_SHORT).show();
+
+                Intent intent  = new Intent(ListaProgramasActivity.this, DetalleProgramaActivity.class);
+
+                startActivity(intent);
+
+               /* Programa programa = new Programa("","","","");
+                FragmentoDetallePrograma fragDetalle = FragmentoDetallePrograma.newInstance(programa);*/
+
+                //FragmentoDetallePrograma fragDetalle = new FragmentoDetallePrograma();
+                /*getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragmentListaProgramas, fragDetalle)
+                        .commit();*/
+
+               /* getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.frameListaProgramas, fragDetalle)
+                        .commit();*/
             }
         });
 
@@ -110,6 +134,13 @@ public class ListaProgramasActivity extends AppCompatActivity
 
         btAdapter = BluetoothAdapter.getDefaultAdapter();
         checkBTState();
+
+        /*try {*/
+        //Obtenemos los datos de la BD
+            listaProgramas.setAdapter(new ProgramaAdapter(ProgramaFactory.getInstance(this).obtenerProductos()));
+        /*} catch (SQLException e) {
+            e.printStackTrace();
+        }*/
     }
 
     public void conectarDispositivo(String direccion) {
@@ -149,10 +180,11 @@ public class ListaProgramasActivity extends AppCompatActivity
     }
 
     //Implementamos la interfaz de FragmentoListaProgramas
-    @Override
-    public void onProgramaSeleccionado(Programa programa){
-
-    }
+    /*@Override
+    public void onProgramaSeleccionado(Programa programa) {
+        *//*FragmentoDetallePrograma fragDetalleProg = new FragmentoDetallePrograma();
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragmentListaProgramas, fragDetalleProg).commit();*//*
+    }*/
 
     private BluetoothSocket crearBluetoothSocket(BluetoothDevice device) throws IOException {
         //Creamos una conexion segura con el Bluetooth usando el UUID
@@ -227,6 +259,7 @@ public class ListaProgramasActivity extends AppCompatActivity
         }
     }
 
+    //POr el momento no funciona
     /*private class ConnectBT extends AsyncTask<Void, Void, Void>  // UI thread
     {
         private boolean ConnectSuccess = true; //if it's here, it's almost connected

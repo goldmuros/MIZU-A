@@ -5,13 +5,34 @@ package com.example.cosas_faciles.mizu_a;
  */
 
 public class Programa {
-    private String dia, hora, tiempo, activo;
+    private String dia;
+    private String hora;
+    private String duracion;
+    private String activo;
+    private int id;
 
-    public Programa(String dia, String hora, String tiempo, String activo) {
+    public Programa(int id, String dia, String hora, String duracion, String activo) {
+        this.id = id;
         this.dia = dia;
         this.hora = hora;
-        this.tiempo = tiempo;//Renombrarlo para que se llame duracion
+        this.duracion = duracion;//Renombrarlo para que se llame duracion
         this.activo = activo;
+    }
+
+    public String getDuracion() {
+        return duracion;
+    }
+
+    public void setDuracion(String duracion) {
+        this.duracion = duracion;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getDia() {
@@ -28,14 +49,6 @@ public class Programa {
 
     public void setHora(String hora) {
         this.hora = hora;
-    }
-
-    public String getTiempo() {
-        return tiempo;
-    }
-
-    public void setTiempo(String tiempo) {
-        this.tiempo = tiempo;
     }
 
     public String getActivo() {
