@@ -34,7 +34,6 @@
                 android:layout_height="wrap_content"
                 android:text="@string/EncendidoManual" />
 
-
             <Button
                 android:id="@+id/btnEncender"
                 android:layout_width="wrap_content"
@@ -67,24 +66,13 @@
                 android:id="@+id/listaProgramas"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
-            <!--<FrameLayout
-                android:id="@+id/frameListaProgramas"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <fragment xmlns:android="http://schemas.android.com/apk/res/android"
-                    android:id="@+id/fragmentListaProgramas"
-                    android:name="com.example.cosas_faciles.mizu_a.FragmentoListaProgramas"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
-            </FrameLayout>-->
         </LinearLayout>
+
         <LinearLayout
             android:id="@+id/layoutBotonesProgramas"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:orientation="horizontal">
-            <!--android:layout_below="@id/fragmentListaProgramas"-->
 
             <Button
                 android:id="@+id/btnBorrarPrograma"

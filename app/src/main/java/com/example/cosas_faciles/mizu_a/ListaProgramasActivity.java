@@ -13,6 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ListView;
@@ -21,6 +22,9 @@ import android.widget.Toast;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.Serializable;
+import java.sql.SQLException;
+import java.util.List;
 import java.util.UUID;
 
 //import android.support.v7.widget.AppCompatCheckBox;
@@ -32,16 +36,13 @@ import java.util.UUID;
  */
 
 public class ListaProgramasActivity extends AppCompatActivity {
-    /*implements FragmentoListaProgramas.Callbacks {*/
-    // SPP UUID service - this should work for most devices
     private static UUID BTMODULEUUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
-    ;
     //Otras variables
     private static String nombreBluetooth;
     private static String direccionMAC;
     //Objetos de la pantalla
     private Button btEncender, btApagar, btBorrarPrograma, btAnadirPrograma;
-    private CheckBox chbPrograma;
+    //private CheckBox chbPrograma; por el momento lo comentamos
     //Bluetooth
     private BluetoothAdapter btAdapter = null;
     private BluetoothSocket btSocket = null;
@@ -50,13 +51,11 @@ public class ListaProgramasActivity extends AppCompatActivity {
     //Es para la conexion async, borrar si no se usa
     private ProgressDialog progresoConexion;
 
-    //Quitarlo cuando se implementen los fragmentos
     private ListView listaProgramas;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
 
         //BTMODULEUUID = generarUUID(); //Se comenta porque aun no funciona, revisarlo cuando se tenga tiempo
 
@@ -64,8 +63,20 @@ public class ListaProgramasActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_lista_programas);
 
-        //Quitarlo cuando se implementen los fragmentos
         listaProgramas = (ListView) findViewById(R.id.listaProgramas);
+
+        listaProgramas.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int posicion, long id) {
+                Programa programa = (Programa) listaProgramas.getItemAtPosition(posicion);
+
+                Intent detalle = new Intent(ListaProgramasActivity.this, DetalleProgramaActivity.class);
+                detalle.putExtra("id", programa.getId());
+                detalle.putExtra("ACCION","M");
+
+                startActivity(detalle);
+            }
+        });
 
         //Obtenemos los parametros del activity/pantalla anterior (ListaDispositivosActivity)
         nombreBluetooth = getIntent().getExtras().getString("nombreBluetooth");
@@ -98,35 +109,31 @@ public class ListaProgramasActivity extends AppCompatActivity {
         btAnadirPrograma = (Button) findViewById(R.id.btnAnadirPrograma);
         btAnadirPrograma.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                //Hacer la llamada al otro fragment
                 Toast.makeText(ListaProgramasActivity.this,
                         "Anadir", Toast.LENGTH_SHORT).show();
 
                 Intent intent  = new Intent(ListaProgramasActivity.this, DetalleProgramaActivity.class);
 
+                intent.putExtra("ACCION","A");
+                intent.putExtra("BT", (Serializable) hiloConectado);
+
                 startActivity(intent);
-
-               /* Programa programa = new Programa("","","","");
-                FragmentoDetallePrograma fragDetalle = FragmentoDetallePrograma.newInstance(programa);*/
-
-                //FragmentoDetallePrograma fragDetalle = new FragmentoDetallePrograma();
-                /*getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.fragmentListaProgramas, fragDetalle)
-                        .commit();*/
-
-               /* getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.frameListaProgramas, fragDetalle)
-                        .commit();*/
             }
         });
 
-        chbPrograma = (CheckBox) findViewById(R.id.chbPrograma);
-
+        //Por el momento lo comentamos
+        //chbPrograma = (CheckBox) findViewById(R.id.chbPrograma);
 
         btBorrarPrograma = (Button) findViewById(R.id.btnBorrarPrograma);
         btBorrarPrograma.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                //Hacer la llamada al otro fragment
+                Intent intent  = new Intent(ListaProgramasActivity.this, DetalleProgramaActivity.class);
+
+                intent.putExtra("ACCION","A");
+                intent.putExtra("BT", (Serializable) hiloConectado);
+
+                startActivity(intent);
+
                 Toast.makeText(ListaProgramasActivity.this,
                         "Borrar", Toast.LENGTH_SHORT).show();
             }
@@ -134,13 +141,6 @@ public class ListaProgramasActivity extends AppCompatActivity {
 
         btAdapter = BluetoothAdapter.getDefaultAdapter();
         checkBTState();
-
-        /*try {*/
-        //Obtenemos los datos de la BD
-            listaProgramas.setAdapter(new ProgramaAdapter(ProgramaFactory.getInstance(this).obtenerProductos()));
-        /*} catch (SQLException e) {
-            e.printStackTrace();
-        }*/
     }
 
     public void conectarDispositivo(String direccion) {
@@ -156,20 +156,18 @@ public class ListaProgramasActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
+        List<Programa> programas = null;
+        try {
+            programas = (List<Programa>) ProgramaFactory.getInstance(ListaProgramasActivity.this).obtenerProductos();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        //Obtenemos los datos de la BD
+        listaProgramas.setAdapter(new ProgramaAdapter(programas));
+
         //Se realiza la conexion con el BT
         //conectarBT();
-
-        /*List<Programa> listaProgramas = new ArrayList<>();
-
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-
-        FragmentoListaProgramas fragmentListaProgramas = new FragmentoListaProgramas();
-        fragmentTransaction.replace(R.id.layoutFragments, fragmentListaProgramas).commit();
-
-        ListView listViewProgramas = (ListView) findViewById(R.id.listaProgramas);
-
-        listViewProgramas.setAdapter(new ProgramaAdapter(listaProgramas));*/
     }
 
     @Override
@@ -178,13 +176,6 @@ public class ListaProgramasActivity extends AppCompatActivity {
 
         //desconectarBT();
     }
-
-    //Implementamos la interfaz de FragmentoListaProgramas
-    /*@Override
-    public void onProgramaSeleccionado(Programa programa) {
-        *//*FragmentoDetallePrograma fragDetalleProg = new FragmentoDetallePrograma();
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragmentListaProgramas, fragDetalleProg).commit();*//*
-    }*/
 
     private BluetoothSocket crearBluetoothSocket(BluetoothDevice device) throws IOException {
         //Creamos una conexion segura con el Bluetooth usando el UUID
@@ -259,87 +250,5 @@ public class ListaProgramasActivity extends AppCompatActivity {
         }
     }
 
-    //POr el momento no funciona
-    /*private class ConnectBT extends AsyncTask<Void, Void, Void>  // UI thread
-    {
-        private boolean ConnectSuccess = true; //if it's here, it's almost connected
 
-        @Override
-        protected void onPreExecute()
-        {
-            progress = ProgressDialog.show(ListaProgramasActivity.this, "Connecting...", "Please wait!!!");  //show a progress dialog
-        }
-
-        @Override
-        protected Void doInBackground(Void... devices) //while the progress dialog is shown, the connection is done in background
-        {
-            try
-            {
-                if (btSocket == null || !isBtConnected)
-                {
-                    btAdapter = BluetoothAdapter.getDefaultAdapter();//get the mobile bluetooth device
-                    BluetoothDevice dispositivo = btAdapter.getRemoteDevice(direccionMAC);//connects to the device's address and checks if it's available
-                    btSocket = dispositivo.createInsecureRfcommSocketToServiceRecord(BTMODULEUUID);//create a RFCOMM (SPP) connection
-                    BluetoothAdapter.getDefaultAdapter().cancelDiscovery();
-                    btSocket.connect();//start connection
-                }
-            }
-            catch (IOException e)
-            {
-                ConnectSuccess = false;//if the try failed, you can check the exception here
-            }
-            return null;
-        }
-        @Override
-        protected void onPostExecute(Void result) //after the doInBackground, it checks if everything went fine
-        {
-            super.onPostExecute(result);
-
-            if (!ConnectSuccess)
-            {
-                msg("Connection Failed. Is it a SPP Bluetooth? Try again.");
-                finish();
-            }
-            else
-            {
-                msg("Connected.");
-                isBtConnected = true;
-            }
-            progress.dismiss();
-        }
-    }*/
-
-    //Creamos una nueva clase para el hilo que se conecta
-    private class ConnectedThread extends Thread {
-        private final OutputStream mmOutStream;
-
-        //creation of the connect thread
-        public ConnectedThread(BluetoothSocket socket) {
-            OutputStream tmpOut = null;
-
-            try {
-                //Create I/O streams for connection
-                tmpOut = socket.getOutputStream();
-            } catch (IOException e) {
-            }
-
-            mmOutStream = tmpOut;
-        }
-
-        public void run() {
-
-        }
-
-        //write method
-        public void write(String input) {
-            byte[] msgBuffer = input.getBytes();//Convierte el string a bytes
-            try {
-                mmOutStream.write(msgBuffer);//Envia bytes atravez de la conexion BT via outstream
-            } catch (IOException e) {
-                //Excepsion
-                Toast.makeText(getBaseContext(), "La Conexión fallo", Toast.LENGTH_LONG).show();
-                finish();
-            }
-        }
-    }
 }

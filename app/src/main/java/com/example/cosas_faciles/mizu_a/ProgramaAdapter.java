@@ -48,7 +48,7 @@ public class ProgramaAdapter extends BaseAdapter {
 
         Programa programa = (Programa) getItem(posicion);
 
-        CheckBox chbPrograma = (CheckBox) view.findViewById(R.id.chbPrograma);
+        //CheckBox chbPrograma = (CheckBox) view.findViewById(R.id.chbPrograma);
 
 
         TextView dia = (TextView) view.findViewById(R.id.diaListaPrograma);
