@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal">
+
+    <!--Por el momento lo comentamos-->
+    <!--<CheckBox
+        android:id="@+id/chbPrograma"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="onCheckboxClicked" />-->
+
+    <TextView
+        android:id="@+id/diaListaPrograma"
+        android:layout_width="100dp"
+        android:layout_height="30dp"
+        android:text="Miércoles"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/horaComienzoListaprograma"
+        android:layout_width="100dp"
+        android:layout_height="30dp"
+        android:text="20:20"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/duracionListaprograma"
+        android:layout_width="100dp"
+        android:layout_height="30dp"
+        android:text="30 min"
+        android:textSize="18sp" />
+
+    <Button
+        android:id="@+id/btnSuspender"
+        android:layout_width="50dp"
+        android:layout_height="wrap_content" />
+</LinearLayout>
