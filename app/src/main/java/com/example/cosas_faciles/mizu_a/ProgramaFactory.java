@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
 import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.table.TableUtils;
 
 //import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +32,7 @@ public class ProgramaFactory {
     private ProgramaFactory(Context context) throws SQLException {
        OrmLiteSqliteOpenHelper helper = OpenHelperManager.getHelper(context, DatabaseHelper.class);
 
-        dao = helper.getDao(Programa.class);
+       dao = helper.getDao(Programa.class);
     }
 
     public void guardarPrograma(Programa programa) throws SQLException {

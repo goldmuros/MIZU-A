@@ -140,7 +140,7 @@ public class ListaProgramasActivity extends AppCompatActivity {
         });
 
         btAdapter = BluetoothAdapter.getDefaultAdapter();
-        checkBTState();
+        //checkBTState();
     }
 
     public void conectarDispositivo(String direccion) {
