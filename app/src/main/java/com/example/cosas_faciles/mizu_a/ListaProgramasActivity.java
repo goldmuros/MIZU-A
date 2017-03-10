@@ -65,6 +65,16 @@ public class ListaProgramasActivity extends AppCompatActivity {
 
         listaProgramas = (ListView) findViewById(R.id.listaProgramas);
 
+        List<Programa> programas = null;
+        try {
+            programas = (List<Programa>) ProgramaFactory.getInstance(ListaProgramasActivity.this).obtenerProgramas();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        //Obtenemos los datos de la BD
+        listaProgramas.setAdapter(new ProgramaAdapter(programas));
+
         listaProgramas.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int posicion, long id) {
@@ -124,12 +134,12 @@ public class ListaProgramasActivity extends AppCompatActivity {
         //Por el momento lo comentamos
         //chbPrograma = (CheckBox) findViewById(R.id.chbPrograma);
 
-        btBorrarPrograma = (Button) findViewById(R.id.btnBorrarPrograma);
+        /*btBorrarPrograma = (Button) findViewById(R.id.btnBorrarPrograma);
         btBorrarPrograma.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent intent  = new Intent(ListaProgramasActivity.this, DetalleProgramaActivity.class);
 
-                intent.putExtra("ACCION","A");
+                intent.putExtra("ACCION","M");
                 intent.putExtra("BT", (Serializable) hiloConectado);
 
                 startActivity(intent);
@@ -137,7 +147,7 @@ public class ListaProgramasActivity extends AppCompatActivity {
                 Toast.makeText(ListaProgramasActivity.this,
                         "Borrar", Toast.LENGTH_SHORT).show();
             }
-        });
+        });*/
 
         btAdapter = BluetoothAdapter.getDefaultAdapter();
         //checkBTState();
@@ -156,7 +166,7 @@ public class ListaProgramasActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        List<Programa> programas = null;
+        /*List<Programa> programas = null;
         try {
             programas = (List<Programa>) ProgramaFactory.getInstance(ListaProgramasActivity.this).obtenerProductos();
         } catch (SQLException e) {
@@ -165,6 +175,13 @@ public class ListaProgramasActivity extends AppCompatActivity {
 
         //Obtenemos los datos de la BD
         listaProgramas.setAdapter(new ProgramaAdapter(programas));
+*/
+        super.onResume();
+        try {
+            ((ProgramaAdapter)listaProgramas.getAdapter()).setProgramas(ProgramaFactory.getInstance(this).obtenerProgramas());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
         //Se realiza la conexion con el BT
         //conectarBT();
