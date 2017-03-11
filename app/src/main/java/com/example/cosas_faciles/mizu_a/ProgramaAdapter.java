@@ -21,6 +21,11 @@ public class ProgramaAdapter extends BaseAdapter {
         this.programas = programas;
     }
 
+    public void setProgramas(List<Programa> programas){
+        this.programas = programas;
+        notifyDataSetChanged();
+    }
+
     @Override
     public int getCount() {
         return programas.size();
@@ -52,7 +57,22 @@ public class ProgramaAdapter extends BaseAdapter {
 
 
         TextView dia = (TextView) view.findViewById(R.id.diaListaPrograma);
-        dia.setText(String.valueOf(programa.getDia()));
+
+        if (programa.getDia().equals("Lun")){
+            dia.setText("Lunes");
+        } else if (programa.getDia().equals("Mar")) {
+            dia.setText("Martes");
+        } else if (programa.getDia().equals("Mie")) {
+            dia.setText("Miércoles");
+        } else if (programa.getDia().equals("Jue")) {
+            dia.setText("Jueves");
+        } else if (programa.getDia().equals("Vie")) {
+            dia.setText("Viernes");
+        } else if (programa.getDia().equals("Sab")) {
+            dia.setText("Sábado");
+        } else {
+            dia.setText("Domingo");
+        }
 
         TextView hora = (TextView) view.findViewById(R.id.horaComienzoListaprograma);
         hora.setText(String.valueOf(programa.getHora()));
@@ -60,11 +80,11 @@ public class ProgramaAdapter extends BaseAdapter {
         TextView duracion = (TextView) view.findViewById(R.id.duracionListaprograma);
         duracion.setText(String.valueOf(programa.getDuracion()));
 
-        Button btnSuspender = (Button) view.findViewById(R.id.btnSuspender);
+        TextView suspender = (TextView) view.findViewById(R.id.suspenderActivarListaPrograma);
         if(programa.getActivo().equals("S")){
-            btnSuspender.setText(R.string.Activo);
+            suspender.setText(R.string.Activo);
         } else {
-            btnSuspender.setText(R.string.Suspender);
+            suspender.setText(R.string.Suspender);
         }
 
         return view;

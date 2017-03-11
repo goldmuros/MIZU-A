@@ -39,7 +39,7 @@ public class ProgramaFactory {
         dao.create(programa);
     }
 
-    public List<Programa> obtenerProductos() throws SQLException {
+    public List<Programa> obtenerProgramas() throws SQLException {
         return dao.queryForAll();
     }
 

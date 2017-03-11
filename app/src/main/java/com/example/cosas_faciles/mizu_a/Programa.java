@@ -51,7 +51,7 @@ public class Programa {
         this.duracion = duracion;
     }
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 

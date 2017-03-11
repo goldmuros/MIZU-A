@@ -17,8 +17,6 @@ import java.sql.SQLException;
  */
 
 public class DetalleProgramaActivity extends AppCompatActivity {
-
-    int programaId = 0;
     //Objetos de la pantalla
     private Button btAceptar, btCancelar, btEliminar;
     private CheckBox chbLun, chbMar, chbMie, chbJue, chbVie, chbSab, chbDom;
@@ -94,6 +92,15 @@ public class DetalleProgramaActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String dias = "";
+
+                int programaId = 0;
+
+                try {
+                    //Si es Añadir obtenemos la cantidad de programas para generar un nuevo ID
+                    programaId = ProgramaFactory.getInstance(DetalleProgramaActivity.this).cantidadProgramas();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
 
                 if (accion.equals("A")) {
                     //Preparar logica que lea todos los dias si estan chequeados y que los vaya guardando
@@ -177,7 +184,92 @@ public class DetalleProgramaActivity extends AppCompatActivity {
                         }
                     }
                 } else {
-                    setearModificaciones(programaModificar);
+                    dias = "";
+                    programaModificar.setDuracion(duracion);
+                    programaModificar.setDuracionPosicion(duracionPosicion);
+                    programaModificar.setHora(txtHsComienzo.getText().toString());
+                    programaModificar.setActivo("A");
+
+                    //Preparar logica que lea todos los dias si estan chequeados y que los vaya guardando
+                    if (chbLun.isChecked()) {
+                        programaModificar.setDia("Lun");
+
+                        modificarPrograma(programaModificar);
+
+                        dias = "Lun";
+                    }
+
+                    if (chbMar.isChecked()) {
+                        programaModificar.setDia("Mar");
+
+                        modificarPrograma(programaModificar);
+
+                        if (dias.isEmpty()) {
+                            dias = "Mar";
+                        } else {
+                            dias += ",Mar";
+                        }
+                    }
+
+                    if (chbMie.isChecked()) {
+                        programaModificar.setDia("Mie");
+
+                        modificarPrograma(programaModificar);
+
+                        if (dias.isEmpty()) {
+                            dias = "Mie";
+                        } else {
+                            dias += ",Mie";
+                        }
+                    }
+
+                    if (chbJue.isChecked()) {
+                        programaModificar.setDia("Jue");
+
+                        modificarPrograma(programaModificar);
+
+                        if (dias.isEmpty()) {
+                            dias = "Jue";
+                        } else {
+                            dias += ",Jue";
+                        }
+                    }
+
+                    if (chbVie.isChecked()) {
+                        programaModificar.setDia("Vie");
+
+                        modificarPrograma(programaModificar);
+
+                        if (dias.isEmpty()) {
+                            dias = "Vie";
+                        } else {
+                            dias += ",Vie";
+                        }
+                    }
+
+                    if (chbSab.isChecked()) {
+                        programaModificar.setDia("Sab");
+
+                        modificarPrograma(programaModificar);
+
+                        if (dias.isEmpty()) {
+                            dias = "Sab";
+                        } else {
+                            dias += ",Sab";
+                        }
+                    }
+
+                    if (chbDom.isChecked()) {
+                        programaModificar.setDia("Dom");
+
+                        modificarPrograma(programaModificar);
+
+                        if (dias.isEmpty()) {
+                            dias = "Dom";
+                        } else {
+                            dias += ",Dom";
+                        }
+                    }
                 }
 
                 String datosEnviar = dias + ";" + txtHsComienzo.getText().toString() + ";" +
@@ -194,29 +286,31 @@ public class DetalleProgramaActivity extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
                 //Guardamos el valor de lo que se seleccion en el combo/spinner
                 duracion = (String) parent.getItemAtPosition(pos);
+
+                duracionPosicion = pos;
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
                 //Guardamos el valor de lo que se seleccion en el combo/spinner
                 duracion = (String) parent.getItemAtPosition(0);
+
+                duracionPosicion = 0;
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
 
         accion = getIntent().getStringExtra("ACCION");
 
-        if (accion.equals("A")) {
-            try {
-                //Si es Añadir obtenemos la cantidad de programas para generar un nuevo ID
-                programaId = ProgramaFactory.getInstance(DetalleProgramaActivity.this).cantidadProgramas();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        } else {
+        if (accion.equals("M")) {
             //programaModificar = (Programa) getIntent().getSerializableExtra("BT");
             Bundle extras = getIntent().getExtras();
 
-            programaId = extras.getInt("id");
+            int programaId = extras.getInt("id");
 
             try {
                 programaModificar = ProgramaFactory.getInstance(this).buscarPrograma(programaId);
@@ -234,6 +328,14 @@ public class DetalleProgramaActivity extends AppCompatActivity {
 
         try {
             ProgramaFactory.getInstance(DetalleProgramaActivity.this).guardarPrograma(programa);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void modificarPrograma(Programa programaModificar){
+        try {
+            ProgramaFactory.getInstance(DetalleProgramaActivity.this).modificarPrograma(programaModificar);
         } catch (SQLException e) {
             e.printStackTrace();
         }
