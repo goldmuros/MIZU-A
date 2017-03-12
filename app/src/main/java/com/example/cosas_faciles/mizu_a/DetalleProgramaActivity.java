@@ -18,7 +18,7 @@ import java.sql.SQLException;
 
 public class DetalleProgramaActivity extends AppCompatActivity {
     //Objetos de la pantalla
-    private Button btAceptar, btCancelar, btEliminar;
+    private Button btAceptar, btCancelar, btEliminar, btActivo, btSuspender;
     private CheckBox chbLun, chbMar, chbMie, chbJue, chbVie, chbSab, chbDom;
     private EditText txtHsComienzo;
     private Spinner spinTiempoRiego;
@@ -43,6 +43,8 @@ public class DetalleProgramaActivity extends AppCompatActivity {
         btAceptar = (Button) findViewById(R.id.btnAceptarDetalle);
         btEliminar = (Button) findViewById(R.id.btnEliminarProgramaDetalle);
         btCancelar = (Button) findViewById(R.id.btnCancelarDetalle);
+        btActivo = (Button) findViewById(R.id.btnActivoProgramaDetalle);
+        btSuspender = (Button) findViewById(R.id.btnSuspenderrogramaDetalle);
 
         //Checkboxs
         chbLun = (CheckBox) findViewById(R.id.chbLun);
@@ -63,7 +65,6 @@ public class DetalleProgramaActivity extends AppCompatActivity {
 
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinTiempoRiego.setAdapter(adapter);
-
 
         btCancelar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -105,16 +106,16 @@ public class DetalleProgramaActivity extends AppCompatActivity {
                 if (accion.equals("A")) {
                     //Preparar logica que lea todos los dias si estan chequeados y que los vaya guardando
                     if (chbLun.isChecked()) {
-                        //implementar la logica para el spinner, es un bardo
-                        guardarPrograma(programaId + 1, "Lun", txtHsComienzo.getText().toString(),
+
+                        guardarPrograma(programaId++, "Lun", txtHsComienzo.getText().toString(),
                                 duracion, duracionPosicion, "A");
 
                         dias = "Lun";
                     }
 
                     if (chbMar.isChecked()) {
-                        //implementar la logica para el spinner, es un bardo
-                        guardarPrograma(programaId + 1, "Mar", txtHsComienzo.getText().toString(),
+
+                        guardarPrograma(programaId++, "Mar", txtHsComienzo.getText().toString(),
                                 duracion, duracionPosicion, "A");
 
                         if (dias.isEmpty()) {
@@ -125,8 +126,8 @@ public class DetalleProgramaActivity extends AppCompatActivity {
                     }
 
                     if (chbMie.isChecked()) {
-                        //implementar la logica para el spinner, es un bardo
-                        guardarPrograma(programaId + 1, "Mie", txtHsComienzo.getText().toString(),
+
+                        guardarPrograma(programaId++, "Mie", txtHsComienzo.getText().toString(),
                                 duracion, duracionPosicion, "A");
 
                         if (dias.isEmpty()) {
@@ -137,8 +138,8 @@ public class DetalleProgramaActivity extends AppCompatActivity {
                     }
 
                     if (chbJue.isChecked()) {
-                        //implementar la logica para el spinner, es un bardo
-                        guardarPrograma(programaId + 1, "Jue", txtHsComienzo.getText().toString(),
+
+                        guardarPrograma(programaId++, "Jue", txtHsComienzo.getText().toString(),
                                 duracion, duracionPosicion, "A");
 
                         if (dias.isEmpty()) {
@@ -149,8 +150,8 @@ public class DetalleProgramaActivity extends AppCompatActivity {
                     }
 
                     if (chbVie.isChecked()) {
-                        //implementar la logica para el spinner, es un bardo
-                        guardarPrograma(programaId + 1, "Vie", txtHsComienzo.getText().toString(),
+
+                        guardarPrograma(programaId++, "Vie", txtHsComienzo.getText().toString(),
                                 duracion, duracionPosicion, "A");
 
                         if (dias.isEmpty()) {
@@ -161,8 +162,8 @@ public class DetalleProgramaActivity extends AppCompatActivity {
                     }
 
                     if (chbSab.isChecked()) {
-                        //implementar la logica para el spinner, es un bardo
-                        guardarPrograma(programaId + 1, "Sab", txtHsComienzo.getText().toString(),
+
+                        guardarPrograma(programaId++, "Sab", txtHsComienzo.getText().toString(),
                                 duracion, duracionPosicion, "A");
 
                         if (dias.isEmpty()) {
@@ -173,8 +174,8 @@ public class DetalleProgramaActivity extends AppCompatActivity {
                     }
 
                     if (chbDom.isChecked()) {
-                        //implementar la logica para el spinner, es un bardo
-                        guardarPrograma(programaId + 1, "Dom", txtHsComienzo.getText().toString(),
+
+                        guardarPrograma(programaId++, "Dom", txtHsComienzo.getText().toString(),
                                 duracion, duracionPosicion, "A");
 
                         if (dias.isEmpty()) {
