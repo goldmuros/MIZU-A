@@ -81,7 +81,7 @@ public class ProgramaAdapter extends BaseAdapter {
         duracion.setText(String.valueOf(programa.getDuracion()));
 
         TextView suspender = (TextView) view.findViewById(R.id.suspenderActivarListaPrograma);
-        if(programa.getActivo().equals("S")){
+        if(programa.getActivo().equals("A")){
             suspender.setText(R.string.Activo);
         } else {
             suspender.setText(R.string.Suspender);

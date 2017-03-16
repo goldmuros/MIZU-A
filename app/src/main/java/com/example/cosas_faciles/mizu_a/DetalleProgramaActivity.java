@@ -89,11 +89,115 @@ public class DetalleProgramaActivity extends AppCompatActivity {
             }
         });
 
+        chbLun.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (accion.equals("M")) {
+                    //Si esta chequeado se deshabilitan los otros checks
+                    if (chbLun.isChecked()) {
+                        deshabilitarChecks(1);
+                    } else {
+                        //Si NO esta chequeado se habilitan los otros checks
+                        habilitarChecks(1);
+                    }
+                }
+            }
+        });
+
+        chbMar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (accion.equals("M")) {
+                    //Si esta chequeado se deshabilitan los otros checks
+                    if (chbMar.isChecked()) {
+                        deshabilitarChecks(2);
+                    } else {
+                        //Si NO esta chequeado se habilitan los otros checks
+                        habilitarChecks(2);
+                    }
+                }
+            }
+        });
+
+        chbMie.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (accion.equals("M")) {
+                    //Si esta chequeado se deshabilitan los otros checks
+                    if (chbMie.isChecked()) {
+                        deshabilitarChecks(3);
+                    } else {
+                        //Si NO esta chequeado se habilitan los otros checks
+                        habilitarChecks(3);
+                    }
+                }
+            }
+        });
+
+        chbJue.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (accion.equals("M")) {
+                    //Si esta chequeado se deshabilitan los otros checks
+                    if (chbJue.isChecked()) {
+                        deshabilitarChecks(4);
+                    } else {
+                        //Si NO esta chequeado se habilitan los otros checks
+                        habilitarChecks(4);
+                    }
+                }
+            }
+        });
+
+        chbVie.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (accion.equals("M")) {
+                    //Si esta chequeado se deshabilitan los otros checks
+                    if (chbVie.isChecked()) {
+                        deshabilitarChecks(5);
+                    } else {
+                        //Si NO esta chequeado se habilitan los otros checks
+                        habilitarChecks(5);
+                    }
+                }
+            }
+        });
+
+        chbSab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (accion.equals("M")) {
+                    //Si esta chequeado se deshabilitan los otros checks
+                    if (chbSab.isChecked()) {
+                        deshabilitarChecks(6);
+                    } else {
+                        //Si NO esta chequeado se habilitan los otros checks
+                        habilitarChecks(6);
+                    }
+                }
+            }
+        });
+
+        chbDom.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (accion.equals("M")) {
+                    //Si esta chequeado se deshabilitan los otros checks
+                    if (chbDom.isChecked()) {
+                        deshabilitarChecks(7);
+                    } else {
+                        //Si NO esta chequeado se habilitan los otros checks
+                        habilitarChecks(7);
+                    }
+                }
+            }
+        });
+
         btAceptar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String dias = "";
-
                 int programaId = 0;
 
                 try {
@@ -106,7 +210,6 @@ public class DetalleProgramaActivity extends AppCompatActivity {
                 if (accion.equals("A")) {
                     //Preparar logica que lea todos los dias si estan chequeados y que los vaya guardando
                     if (chbLun.isChecked()) {
-
                         guardarPrograma(programaId++, "Lun", txtHsComienzo.getText().toString(),
                                 duracion, duracionPosicion, "A");
 
@@ -114,7 +217,6 @@ public class DetalleProgramaActivity extends AppCompatActivity {
                     }
 
                     if (chbMar.isChecked()) {
-
                         guardarPrograma(programaId++, "Mar", txtHsComienzo.getText().toString(),
                                 duracion, duracionPosicion, "A");
 
@@ -126,7 +228,6 @@ public class DetalleProgramaActivity extends AppCompatActivity {
                     }
 
                     if (chbMie.isChecked()) {
-
                         guardarPrograma(programaId++, "Mie", txtHsComienzo.getText().toString(),
                                 duracion, duracionPosicion, "A");
 
@@ -138,7 +239,6 @@ public class DetalleProgramaActivity extends AppCompatActivity {
                     }
 
                     if (chbJue.isChecked()) {
-
                         guardarPrograma(programaId++, "Jue", txtHsComienzo.getText().toString(),
                                 duracion, duracionPosicion, "A");
 
@@ -150,7 +250,6 @@ public class DetalleProgramaActivity extends AppCompatActivity {
                     }
 
                     if (chbVie.isChecked()) {
-
                         guardarPrograma(programaId++, "Vie", txtHsComienzo.getText().toString(),
                                 duracion, duracionPosicion, "A");
 
@@ -162,7 +261,6 @@ public class DetalleProgramaActivity extends AppCompatActivity {
                     }
 
                     if (chbSab.isChecked()) {
-
                         guardarPrograma(programaId++, "Sab", txtHsComienzo.getText().toString(),
                                 duracion, duracionPosicion, "A");
 
@@ -334,7 +432,7 @@ public class DetalleProgramaActivity extends AppCompatActivity {
         }
     }
 
-    private void modificarPrograma(Programa programaModificar){
+    private void modificarPrograma(Programa programaModificar) {
         try {
             ProgramaFactory.getInstance(DetalleProgramaActivity.this).modificarPrograma(programaModificar);
         } catch (SQLException e) {
@@ -349,21 +447,171 @@ public class DetalleProgramaActivity extends AppCompatActivity {
 
         if (dia.equals("Lun")) {
             chbLun.setChecked(true);
+
+            deshabilitarChecks(1);
         } else if (dia.equals("Mar")) {
             chbMar.setChecked(true);
+
+            deshabilitarChecks(2);
         } else if (dia.equals("Mie")) {
             chbMie.setChecked(true);
+
+            deshabilitarChecks(3);
         } else if (dia.equals("Jue")) {
             chbJue.setChecked(true);
+
+            deshabilitarChecks(4);
         } else if (dia.equals("Vie")) {
             chbVie.setChecked(true);
+
+            deshabilitarChecks(5);
         } else if (dia.equals("Sab")) {
             chbSab.setChecked(true);
+
+            deshabilitarChecks(6);
         } else {
             chbDom.setChecked(true);
+
+            deshabilitarChecks(7);
         }
 
         txtHsComienzo.setText(hora);
         spinTiempoRiego.setSelection(duracionPosicion);
+    }
+
+    private void habilitarChecks(int diaCheckeado) {
+        switch (diaCheckeado) {
+            //Lunes
+            case 1:
+                chbMar.setEnabled(true);
+                chbMie.setEnabled(true);
+                chbJue.setEnabled(true);
+                chbVie.setEnabled(true);
+                chbSab.setEnabled(true);
+                chbDom.setEnabled(true);
+                break;
+            //Martes
+            case 2:
+                chbLun.setEnabled(true);
+                chbMie.setEnabled(true);
+                chbJue.setEnabled(true);
+                chbVie.setEnabled(true);
+                chbSab.setEnabled(true);
+                chbDom.setEnabled(true);
+                break;
+            //Miercoles
+            case 3:
+                chbLun.setEnabled(true);
+                chbMar.setEnabled(true);
+                chbJue.setEnabled(true);
+                chbVie.setEnabled(true);
+                chbSab.setEnabled(true);
+                chbDom.setEnabled(true);
+                break;
+            //Jueves
+            case 4:
+                chbLun.setEnabled(true);
+                chbMar.setEnabled(true);
+                chbMie.setEnabled(true);
+                chbVie.setEnabled(true);
+                chbSab.setEnabled(true);
+                chbDom.setEnabled(true);
+                break;
+            //Viernes
+            case 5:
+                chbLun.setEnabled(true);
+                chbMar.setEnabled(true);
+                chbMie.setEnabled(true);
+                chbJue.setEnabled(true);
+                chbSab.setEnabled(true);
+                chbDom.setEnabled(true);
+                break;
+            //Sabado
+            case 6:
+                chbLun.setEnabled(true);
+                chbMar.setEnabled(true);
+                chbMie.setEnabled(true);
+                chbJue.setEnabled(true);
+                chbVie.setEnabled(true);
+                chbDom.setEnabled(true);
+                break;
+            //Domingo
+            case 7:
+                chbLun.setEnabled(true);
+                chbMar.setEnabled(true);
+                chbMie.setEnabled(true);
+                chbJue.setEnabled(true);
+                chbVie.setEnabled(true);
+                chbSab.setEnabled(true);
+                break;
+        }
+    }
+
+    private void deshabilitarChecks(int diaCheckeado) {
+        switch (diaCheckeado) {
+            //Lunes
+            case 1:
+                chbMar.setEnabled(false);
+                chbMie.setEnabled(false);
+                chbJue.setEnabled(false);
+                chbVie.setEnabled(false);
+                chbSab.setEnabled(false);
+                chbDom.setEnabled(false);
+                break;
+            //Martes
+            case 2:
+                chbLun.setEnabled(false);
+                chbMie.setEnabled(false);
+                chbJue.setEnabled(false);
+                chbVie.setEnabled(false);
+                chbSab.setEnabled(false);
+                chbDom.setEnabled(false);
+                break;
+            //Miercoles
+            case 3:
+                chbLun.setEnabled(false);
+                chbMar.setEnabled(false);
+                chbJue.setEnabled(false);
+                chbVie.setEnabled(false);
+                chbSab.setEnabled(false);
+                chbDom.setEnabled(false);
+                break;
+            //Jueves
+            case 4:
+                chbLun.setEnabled(false);
+                chbMar.setEnabled(false);
+                chbMie.setEnabled(false);
+                chbVie.setEnabled(false);
+                chbSab.setEnabled(false);
+                chbDom.setEnabled(false);
+                break;
+            //Viernes
+            case 5:
+                chbLun.setEnabled(false);
+                chbMar.setEnabled(false);
+                chbMie.setEnabled(false);
+                chbJue.setEnabled(false);
+                chbSab.setEnabled(false);
+                chbDom.setEnabled(false);
+                break;
+            //Sabado
+            case 6:
+                chbLun.setEnabled(false);
+                chbMar.setEnabled(false);
+                chbMie.setEnabled(false);
+                chbJue.setEnabled(false);
+                chbVie.setEnabled(false);
+                chbDom.setEnabled(false);
+                break;
+            //Domingo
+            case 7:
+                chbLun.setEnabled(false);
+                chbMar.setEnabled(false);
+                chbMie.setEnabled(false);
+                chbJue.setEnabled(false);
+                chbVie.setEnabled(false);
+                chbSab.setEnabled(false);
+                break;
+        }
     }
 }
