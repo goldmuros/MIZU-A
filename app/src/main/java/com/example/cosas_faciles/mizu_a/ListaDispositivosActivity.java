@@ -20,6 +20,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Set;
@@ -32,22 +33,19 @@ import java.util.Set;
 public class ListaDispositivosActivity extends AppCompatActivity {
     //Variables globales
     //Objetos de pantalla
-    private LinearLayout layoutDispositivosVinculados, layoutDispositivosDisponibles;
-    private ListView listaDispositivosVinculados, listaDispositivosDisponibles;
-    private Button btnBuscarDispositivos, btnSalir, btnBluetooth;
-    private TextView textoBuscando;
+    private LinearLayout layoutDispositivosVinculados;
+    private ListView listaDispositivosVinculados;
+    private Button btnSalir, btnBluetooth;
 
     //Otros objetos
     private BluetoothAdapter btAdapter = null;
     private Set<BluetoothDevice> dispositivosVinculados;
 
     private ArrayAdapter<String> dispositivosVinculadosArrayAdapter;
-    private ArrayAdapter<String> dispositivosDisponiblesArrayAdapter;
 
     private ArrayList<BluetoothDevice> arrayDispositivosVincuados = new ArrayList<>();
-    private ArrayList<BluetoothDevice> arrayDispositivosDisponibles = new ArrayList<>();
 
-    private ProgressDialog progresoBuscando, progresoVinculando;//Mensaje para buscar dispositivos
+    private ProgressDialog progresoVinculando;//Mensaje para buscar dispositivos
 
     // Instanciamos un BroadcastReceiver que se encargara de detectar si el estado
     // del Bluetooth del dispositivo ha cambiado mediante su handler onReceive
@@ -91,51 +89,6 @@ public class ListaDispositivosActivity extends AppCompatActivity {
 
                     break;
                 }
-
-                // BluetoothDevice.ACTION_FOUND
-                // Cada vez que se descubra un nuevo dispositivo por Bluetooth, se ejecutara
-                // este fragmento de codigo
-                case BluetoothDevice.ACTION_FOUND: {
-                    if (dispositivosDisponiblesArrayAdapter == null) {
-                        dispositivosDisponiblesArrayAdapter = new ArrayAdapter<>(ListaDispositivosActivity.this, R.layout.nombre_dispositivo);
-                        arrayDispositivosDisponibles = new ArrayList<>();
-                    }
-
-                    BluetoothDevice dispositivo = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-
-                    //if(dispositivo.getName().contains("MIZU")){
-                        dispositivosDisponiblesArrayAdapter.add(dispositivo.getName());
-                        arrayDispositivosDisponibles.add(dispositivo);
-                    //}
-
-                    break;
-                }
-
-                // BluetoothAdapter.ACTION_DISCOVERY_FINISHED
-                // Codigo que se ejecutara cuando el Bluetooth finalice la busqueda de dispositivos.
-                case BluetoothAdapter.ACTION_DISCOVERY_FINISHED: {
-                    if (dispositivosDisponiblesArrayAdapter.isEmpty()) {
-                        Toast.makeText(getBaseContext(), "No hay dispositivos disponibles", Toast.LENGTH_SHORT).show();
-                    } else {
-                        listaDispositivosDisponibles.setAdapter(dispositivosDisponiblesArrayAdapter);
-                        layoutDispositivosDisponibles.setVisibility(View.VISIBLE);
-                        btnBuscarDispositivos.setVisibility(View.GONE);
-                    }
-
-                    btAdapter.cancelDiscovery();
-
-                    progresoBuscando.dismiss();
-                    break;
-                }
-                /*case BluetoothDevice.ACTION_BOND_STATE_CHANGED:{
-                    final int state        = intent.getIntExtra(BluetoothDevice.EXTRA_BOND_STATE, BluetoothDevice.ERROR);
-                    final int prevState    = intent.getIntExtra(BluetoothDevice.EXTRA_PREVIOUS_BOND_STATE, BluetoothDevice.ERROR);
-
-                    if (state == BluetoothDevice.BOND_BONDED && prevState == BluetoothDevice.BOND_BONDING) {
-                       progresoVinculando.dismiss();
-                    }
-                    break;
-                }*/
                 default:
                     break;
             }
@@ -158,10 +111,6 @@ public class ListaDispositivosActivity extends AppCompatActivity {
 
         //Ocultamos los layout de las listas
         layoutDispositivosVinculados.setVisibility(View.GONE);
-        layoutDispositivosDisponibles.setVisibility(View.GONE);
-
-        btnBuscarDispositivos.setVisibility(View.GONE);
-        textoBuscando.setVisibility(View.GONE);
 
         registrarEventosBluetooth();
 
@@ -198,11 +147,9 @@ public class ListaDispositivosActivity extends AppCompatActivity {
 
         //Inicializamos los array adapter para las listas de dispositivos
         dispositivosVinculadosArrayAdapter = new ArrayAdapter<>(this, R.layout.nombre_dispositivo);
-        dispositivosDisponiblesArrayAdapter = new ArrayAdapter<>(this, R.layout.nombre_dispositivo);
 
         //Se asignan los arrays a las listas
         listaDispositivosVinculados.setAdapter(dispositivosVinculadosArrayAdapter);
-        listaDispositivosDisponibles.setAdapter(dispositivosDisponiblesArrayAdapter);
 
         if (btAdapter == null) {
             Toast.makeText(getBaseContext(), "El dispositivo no soporta bluetooth", Toast.LENGTH_LONG).show();
@@ -213,27 +160,6 @@ public class ListaDispositivosActivity extends AppCompatActivity {
                 btnBluetooth.setText(R.string.Desconectar);
             }
         }
-
-        btnBuscarDispositivos.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //Limpiamos el array para qu eno haya basura
-                dispositivosDisponiblesArrayAdapter.clear();
-
-                // Comprobamos si existe un descubrimiento en curso. En caso afirmativo, se
-                // cancela.
-                if (btAdapter.isDiscovering())
-                    btAdapter.cancelDiscovery();
-
-                // Iniciamos la busqueda de dispositivos
-                if (btAdapter.startDiscovery())
-                    // Mostramos el mensaje de que el proceso ha comenzado
-                    progresoBuscando = ProgressDialog.show(ListaDispositivosActivity.this, getString(R.string.IniciandoDescubrimiento), getString(R.string.Espere));  //show a progress dialog
-                else
-                    Toast.makeText(ListaDispositivosActivity.this, R.string.ErrorIniciandoDescubrimiento, Toast.LENGTH_SHORT).show();
-            }
-        });
-
 
         listaDispositivosVinculados.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -252,24 +178,6 @@ public class ListaDispositivosActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
-        listaDispositivosDisponibles.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int posicion, long id) {
-
-                BluetoothDevice dispositivo = arrayDispositivosDisponibles.get(posicion);
-
-                if(BluetoothDevice.BOND_NONE == dispositivo.getBondState()){
-                    progresoVinculando = ProgressDialog.show(ListaDispositivosActivity.this, getString(R.string.Vinculando), getString(R.string.Espere));  //show a progress dialog
-
-                    pairDevice(dispositivo);
-                }
-
-                Toast.makeText(ListaDispositivosActivity.this,
-                        "Nombre " + dispositivo.getName() + " Direccion: " + dispositivo.getAddress(), Toast.LENGTH_SHORT).show();
-
-            }
-        });
     }
 
     private void pairDevice(BluetoothDevice device) {
@@ -282,18 +190,17 @@ public class ListaDispositivosActivity extends AppCompatActivity {
     }
 
     //Busca y carga en la lista los dispostivos que estan vinculados
-    private void buscarDispositivosVinculados(){
+    private void buscarDispositivosVinculados() {
         //Obtenemso los dispositivos vinculados
         dispositivosVinculados = btAdapter.getBondedDevices();
 
         layoutDispositivosVinculados.setVisibility(View.VISIBLE);
-        btnBuscarDispositivos.setVisibility(View.VISIBLE);
 
         // Agragamos los dispositivos vinculados al array corespondiente
         if (dispositivosVinculados.size() > 0) {
             for (BluetoothDevice dispositivo : dispositivosVinculados) {
                 //Habiliitar cuando se tenga un mizu cerca
-                if(dispositivo.getName().contains("MIZU")) {
+                if (dispositivo.getName().contains("MIZU")) {
                     dispositivosVinculadosArrayAdapter.add(dispositivo.getName());
                     //Para obtener los datos del dispositivo sin necesidad de ponerlos en la lista
                     arrayDispositivosVincuados.add(dispositivo);
@@ -330,16 +237,11 @@ public class ListaDispositivosActivity extends AppCompatActivity {
     private void referenciarControles() {
         // Referenciamos los elementos de interfaz
         layoutDispositivosVinculados = (LinearLayout) findViewById(R.id.layoutDispositivosVinculados);
-        layoutDispositivosDisponibles = (LinearLayout) findViewById(R.id.layoutDispositivosDisponibles);
 
         listaDispositivosVinculados = (ListView) findViewById(R.id.listaDispositivosVinculados);
-        listaDispositivosDisponibles = (ListView) findViewById(R.id.listaDispositivosDisponibles);
 
-        btnBuscarDispositivos = (Button) findViewById(R.id.btnBuscarDispositivos);
         btnBluetooth = (Button) findViewById(R.id.btnBluetooth);
         btnSalir = (Button) findViewById(R.id.btnSalir);
-
-        textoBuscando = (TextView) findViewById(R.id.textoBuscando);
     }
 
     /**
@@ -368,7 +270,7 @@ public class ListaDispositivosActivity extends AppCompatActivity {
         DialogInterface.OnClickListener listenerSalir = new DialogInterface.OnClickListener() {
 
             @Override
-            public void onClick(DialogInterface dialog, int which){
+            public void onClick(DialogInterface dialog, int which) {
                 finish();
             }
         };

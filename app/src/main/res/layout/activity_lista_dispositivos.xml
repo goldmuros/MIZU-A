@@ -21,7 +21,7 @@
             android:id="@+id/btnBluetooth"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/Conectar"/>
+            android:text="@string/Conectar" />
     </android.support.v7.widget.Toolbar>
 
     <LinearLayout
@@ -40,35 +40,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/layoutDispositivosDisponibles"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/ListaDisponibles" />
-
-        <ListView
-            android:id="@+id/listaDispositivosDisponibles"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-    </LinearLayout>
-
-    <TextView
-        android:id="@+id/textoBuscando"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/buscandoDispositivo" />
-
-    <Button
-        android:id="@+id/btnBuscarDispositivos"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/BuscarDispositivo" />
 
     <Button
         android:id="@+id/btnSalir"
