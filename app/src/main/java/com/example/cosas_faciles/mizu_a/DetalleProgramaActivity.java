@@ -1,5 +1,7 @@
 package com.example.cosas_faciles.mizu_a;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -208,179 +210,183 @@ public class DetalleProgramaActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
 
-                String hora = txtHsComienzo.getText().toString() + ":" +
-                        txtMinComienzo.getText().toString();
+                if (validarHoraComienzo(txtHsComienzo.getText().toString(),
+                                        txtMinComienzo.getText().toString())) {
 
-                if (accion.equals("A")) {
-                    //Preparar logica que lea todos los dias si estan chequeados y que los vaya guardando
-                    if (chbLun.isChecked()) {
-                        guardarPrograma(programaId++, "Lun", hora,
-                                duracion, duracionPosicion, "A");
+                    String horaComienzo = txtHsComienzo.getText().toString() + ":" +
+                            txtMinComienzo.getText().toString();
 
-                        dias = "Lun";
-                    }
+                    if (accion.equals("A")) {
+                        //Preparar logica que lea todos los dias si estan chequeados y que los vaya guardando
+                        if (chbLun.isChecked()) {
+                            guardarPrograma(programaId++, "Lun", horaComienzo,
+                                    duracion, duracionPosicion, "A");
 
-                    if (chbMar.isChecked()) {
-                        guardarPrograma(programaId++, "Mar", hora,
-                                duracion, duracionPosicion, "A");
+                            dias = "Lun";
+                        }
 
-                        if (dias.isEmpty()) {
-                            dias = "Mar";
-                        } else {
-                            dias += ",Mar";
+                        if (chbMar.isChecked()) {
+                            guardarPrograma(programaId++, "Mar", horaComienzo,
+                                    duracion, duracionPosicion, "A");
+
+                            if (dias.isEmpty()) {
+                                dias = "Mar";
+                            } else {
+                                dias += ",Mar";
+                            }
+                        }
+
+                        if (chbMie.isChecked()) {
+                            guardarPrograma(programaId++, "Mie", horaComienzo,
+                                    duracion, duracionPosicion, "A");
+
+                            if (dias.isEmpty()) {
+                                dias = "Mie";
+                            } else {
+                                dias += ",Mie";
+                            }
+                        }
+
+                        if (chbJue.isChecked()) {
+                            guardarPrograma(programaId++, "Jue", horaComienzo,
+                                    duracion, duracionPosicion, "A");
+
+                            if (dias.isEmpty()) {
+                                dias = "Jue";
+                            } else {
+                                dias += ",Jue";
+                            }
+                        }
+
+                        if (chbVie.isChecked()) {
+                            guardarPrograma(programaId++, "Vie", horaComienzo,
+                                    duracion, duracionPosicion, "A");
+
+                            if (dias.isEmpty()) {
+                                dias = "Vie";
+                            } else {
+                                dias += ",Vie";
+                            }
+                        }
+
+                        if (chbSab.isChecked()) {
+                            guardarPrograma(programaId++, "Sab", horaComienzo,
+                                    duracion, duracionPosicion, "A");
+
+                            if (dias.isEmpty()) {
+                                dias = "Sab";
+                            } else {
+                                dias += ",Sab";
+                            }
+                        }
+
+                        if (chbDom.isChecked()) {
+
+                            guardarPrograma(programaId++, "Dom", horaComienzo,
+                                    duracion, duracionPosicion, "A");
+
+                            if (dias.isEmpty()) {
+                                dias = "Dom";
+                            } else {
+                                dias += ",Dom";
+                            }
+                        }
+                    } else {
+                        dias = "";
+                        programaModificar.setDuracion(duracion);
+                        programaModificar.setDuracionPosicion(duracionPosicion);
+                        programaModificar.setHora(horaComienzo);
+                        programaModificar.setActivo("A");
+
+                        //Preparar logica que lea todos los dias si estan chequeados y que los vaya guardando
+                        if (chbLun.isChecked()) {
+                            programaModificar.setDia("Lun");
+
+                            modificarPrograma(programaModificar);
+
+                            dias = "Lun";
+                        }
+
+                        if (chbMar.isChecked()) {
+                            programaModificar.setDia("Mar");
+
+                            modificarPrograma(programaModificar);
+
+                            if (dias.isEmpty()) {
+                                dias = "Mar";
+                            } else {
+                                dias += ",Mar";
+                            }
+                        }
+
+                        if (chbMie.isChecked()) {
+                            programaModificar.setDia("Mie");
+
+                            modificarPrograma(programaModificar);
+
+                            if (dias.isEmpty()) {
+                                dias = "Mie";
+                            } else {
+                                dias += ",Mie";
+                            }
+                        }
+
+                        if (chbJue.isChecked()) {
+                            programaModificar.setDia("Jue");
+
+                            modificarPrograma(programaModificar);
+
+                            if (dias.isEmpty()) {
+                                dias = "Jue";
+                            } else {
+                                dias += ",Jue";
+                            }
+                        }
+
+                        if (chbVie.isChecked()) {
+                            programaModificar.setDia("Vie");
+
+                            modificarPrograma(programaModificar);
+
+                            if (dias.isEmpty()) {
+                                dias = "Vie";
+                            } else {
+                                dias += ",Vie";
+                            }
+                        }
+
+                        if (chbSab.isChecked()) {
+                            programaModificar.setDia("Sab");
+
+                            modificarPrograma(programaModificar);
+
+                            if (dias.isEmpty()) {
+                                dias = "Sab";
+                            } else {
+                                dias += ",Sab";
+                            }
+                        }
+
+                        if (chbDom.isChecked()) {
+                            programaModificar.setDia("Dom");
+
+                            modificarPrograma(programaModificar);
+
+                            if (dias.isEmpty()) {
+                                dias = "Dom";
+                            } else {
+                                dias += ",Dom";
+                            }
                         }
                     }
 
-                    if (chbMie.isChecked()) {
-                        guardarPrograma(programaId++, "Mie", hora,
-                                duracion, duracionPosicion, "A");
+                    String datosEnviar = dias + ";" + horaComienzo + ";" +
+                            duracion + ";A";
 
-                        if (dias.isEmpty()) {
-                            dias = "Mie";
-                        } else {
-                            dias += ",Mie";
-                        }
-                    }
+                    //hiloConectado.write(datosEnviar);
 
-                    if (chbJue.isChecked()) {
-                        guardarPrograma(programaId++, "Jue", hora,
-                                duracion, duracionPosicion, "A");
-
-                        if (dias.isEmpty()) {
-                            dias = "Jue";
-                        } else {
-                            dias += ",Jue";
-                        }
-                    }
-
-                    if (chbVie.isChecked()) {
-                        guardarPrograma(programaId++, "Vie", hora,
-                                duracion, duracionPosicion, "A");
-
-                        if (dias.isEmpty()) {
-                            dias = "Vie";
-                        } else {
-                            dias += ",Vie";
-                        }
-                    }
-
-                    if (chbSab.isChecked()) {
-                        guardarPrograma(programaId++, "Sab", hora,
-                                duracion, duracionPosicion, "A");
-
-                        if (dias.isEmpty()) {
-                            dias = "Sab";
-                        } else {
-                            dias += ",Sab";
-                        }
-                    }
-
-                    if (chbDom.isChecked()) {
-
-                        guardarPrograma(programaId++, "Dom", hora,
-                                duracion, duracionPosicion, "A");
-
-                        if (dias.isEmpty()) {
-                            dias = "Dom";
-                        } else {
-                            dias += ",Dom";
-                        }
-                    }
-                } else {
-                    dias = "";
-                    programaModificar.setDuracion(duracion);
-                    programaModificar.setDuracionPosicion(duracionPosicion);
-                    programaModificar.setHora(hora);
-                    programaModificar.setActivo("A");
-
-                    //Preparar logica que lea todos los dias si estan chequeados y que los vaya guardando
-                    if (chbLun.isChecked()) {
-                        programaModificar.setDia("Lun");
-
-                        modificarPrograma(programaModificar);
-
-                        dias = "Lun";
-                    }
-
-                    if (chbMar.isChecked()) {
-                        programaModificar.setDia("Mar");
-
-                        modificarPrograma(programaModificar);
-
-                        if (dias.isEmpty()) {
-                            dias = "Mar";
-                        } else {
-                            dias += ",Mar";
-                        }
-                    }
-
-                    if (chbMie.isChecked()) {
-                        programaModificar.setDia("Mie");
-
-                        modificarPrograma(programaModificar);
-
-                        if (dias.isEmpty()) {
-                            dias = "Mie";
-                        } else {
-                            dias += ",Mie";
-                        }
-                    }
-
-                    if (chbJue.isChecked()) {
-                        programaModificar.setDia("Jue");
-
-                        modificarPrograma(programaModificar);
-
-                        if (dias.isEmpty()) {
-                            dias = "Jue";
-                        } else {
-                            dias += ",Jue";
-                        }
-                    }
-
-                    if (chbVie.isChecked()) {
-                        programaModificar.setDia("Vie");
-
-                        modificarPrograma(programaModificar);
-
-                        if (dias.isEmpty()) {
-                            dias = "Vie";
-                        } else {
-                            dias += ",Vie";
-                        }
-                    }
-
-                    if (chbSab.isChecked()) {
-                        programaModificar.setDia("Sab");
-
-                        modificarPrograma(programaModificar);
-
-                        if (dias.isEmpty()) {
-                            dias = "Sab";
-                        } else {
-                            dias += ",Sab";
-                        }
-                    }
-
-                    if (chbDom.isChecked()) {
-                        programaModificar.setDia("Dom");
-
-                        modificarPrograma(programaModificar);
-
-                        if (dias.isEmpty()) {
-                            dias = "Dom";
-                        } else {
-                            dias += ",Dom";
-                        }
-                    }
+                    onBackPressed();
                 }
-
-                String datosEnviar = dias + ";" + hora + ";" +
-                        duracion + ";A";
-
-                //hiloConectado.write(datosEnviar);
-
-                onBackPressed();
             }
         });
 
@@ -620,5 +626,62 @@ public class DetalleProgramaActivity extends AppCompatActivity {
                 chbSab.setEnabled(false);
                 break;
         }
+    }
+
+    private boolean validarHoraComienzo(String sHora, String sMinuto){
+        int iHora = (new Integer(sHora)).intValue();
+        int iMinuto = (new Integer(sMinuto)).intValue();
+
+        if (23 < iHora){
+            AlertDialog dialog = crearDialogoErrorHora(getString(R.string.ErrorHora),
+                    getString(R.string.MsgErrorHora), 1);
+
+            dialog.show();
+
+            return false;
+        } else if (59 < iMinuto){
+            AlertDialog dialog = crearDialogoErrorHora(getString(R.string.ErrorMinutos),
+                    getString(R.string.MsgErrorMinutos), 2);
+
+            dialog.show();
+
+            return false;
+        } else {
+            return true;
+        }
+
+    }
+
+    /**
+     * Dialogo para confirmar salir d ela app
+     */
+    private AlertDialog crearDialogoErrorHora(String titulo, String mensaje, final int iCampo) {
+        // Instanciamos un nuevo AlertDialog Builder y le asociamos titulo y mensaje
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+        alertDialogBuilder.setTitle(titulo);
+        alertDialogBuilder.setMessage(mensaje);
+
+        // Creamos un nuevo OnClickListener para el boton OK
+        DialogInterface.OnClickListener listenerOk = new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (iCampo) {
+                    case 1:
+                        txtHsComienzo.setFocusable(true);
+                        break;
+                    case 2:
+                        txtMinComienzo.setFocusable(true);
+                        break;
+                }
+
+            }
+        };
+
+        // Asignamos los botones positivo y negativo a sus respectivos listeners
+        alertDialogBuilder.setPositiveButton(R.string.Ok, listenerOk);
+
+
+        return alertDialogBuilder.create();
     }
 }

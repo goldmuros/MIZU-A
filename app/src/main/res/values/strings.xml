@@ -22,8 +22,14 @@
     <string name="Salir">Salir</string>
     <string name="Si">Si</string>
     <string name="No">No</string>
+    <string name="Ok">Ok</string>
     <string name="Cancelar">Cancelar</string>
     <string name="MsgConfirmarApagar">¿Desea apagar el BLUETOOTH?</string>
+
+    <string name="ErrorHora">Hora Erronea</string>
+    <string name="MsgErrorHora">La HORA es mayor a 23, ingrese un número menor</string>
+    <string name="ErrorMinutos">Minutos Erroneos</string>
+    <string name="MsgErrorMinutos">Los MINUTOS son mayores a 59, ingrese un número menor</string>
 
     <string name="Encender">Encender</string>
     <string name="Apagar">Apagar</string>
