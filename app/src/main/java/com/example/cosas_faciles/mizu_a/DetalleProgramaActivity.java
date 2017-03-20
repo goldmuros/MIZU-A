@@ -20,7 +20,7 @@ public class DetalleProgramaActivity extends AppCompatActivity {
     //Objetos de la pantalla
     private Button btAceptar, btCancelar, btEliminar, btActivo, btSuspender;
     private CheckBox chbLun, chbMar, chbMie, chbJue, chbVie, chbSab, chbDom;
-    private EditText txtHsComienzo;
+    private EditText txtHsComienzo, txtMinComienzo;
     private Spinner spinTiempoRiego;
 
     //Variables
@@ -55,8 +55,9 @@ public class DetalleProgramaActivity extends AppCompatActivity {
         chbSab = (CheckBox) findViewById(R.id.chbSab);
         chbDom = (CheckBox) findViewById(R.id.chbDom);
 
-        //TextView
+        //EditView
         txtHsComienzo = (EditText) findViewById(R.id.txtHsComienzo);
+        txtMinComienzo = (EditText) findViewById(R.id.txtMinComienzo);
 
         //Spinner
         spinTiempoRiego = (Spinner) findViewById(R.id.spinTiempoRiego);
@@ -207,17 +208,20 @@ public class DetalleProgramaActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
 
+                String hora = txtHsComienzo.getText().toString() + ":" +
+                        txtMinComienzo.getText().toString();
+
                 if (accion.equals("A")) {
                     //Preparar logica que lea todos los dias si estan chequeados y que los vaya guardando
                     if (chbLun.isChecked()) {
-                        guardarPrograma(programaId++, "Lun", txtHsComienzo.getText().toString(),
+                        guardarPrograma(programaId++, "Lun", hora,
                                 duracion, duracionPosicion, "A");
 
                         dias = "Lun";
                     }
 
                     if (chbMar.isChecked()) {
-                        guardarPrograma(programaId++, "Mar", txtHsComienzo.getText().toString(),
+                        guardarPrograma(programaId++, "Mar", hora,
                                 duracion, duracionPosicion, "A");
 
                         if (dias.isEmpty()) {
@@ -228,7 +232,7 @@ public class DetalleProgramaActivity extends AppCompatActivity {
                     }
 
                     if (chbMie.isChecked()) {
-                        guardarPrograma(programaId++, "Mie", txtHsComienzo.getText().toString(),
+                        guardarPrograma(programaId++, "Mie", hora,
                                 duracion, duracionPosicion, "A");
 
                         if (dias.isEmpty()) {
@@ -239,7 +243,7 @@ public class DetalleProgramaActivity extends AppCompatActivity {
                     }
 
                     if (chbJue.isChecked()) {
-                        guardarPrograma(programaId++, "Jue", txtHsComienzo.getText().toString(),
+                        guardarPrograma(programaId++, "Jue", hora,
                                 duracion, duracionPosicion, "A");
 
                         if (dias.isEmpty()) {
@@ -250,7 +254,7 @@ public class DetalleProgramaActivity extends AppCompatActivity {
                     }
 
                     if (chbVie.isChecked()) {
-                        guardarPrograma(programaId++, "Vie", txtHsComienzo.getText().toString(),
+                        guardarPrograma(programaId++, "Vie", hora,
                                 duracion, duracionPosicion, "A");
 
                         if (dias.isEmpty()) {
@@ -261,7 +265,7 @@ public class DetalleProgramaActivity extends AppCompatActivity {
                     }
 
                     if (chbSab.isChecked()) {
-                        guardarPrograma(programaId++, "Sab", txtHsComienzo.getText().toString(),
+                        guardarPrograma(programaId++, "Sab", hora,
                                 duracion, duracionPosicion, "A");
 
                         if (dias.isEmpty()) {
@@ -273,7 +277,7 @@ public class DetalleProgramaActivity extends AppCompatActivity {
 
                     if (chbDom.isChecked()) {
 
-                        guardarPrograma(programaId++, "Dom", txtHsComienzo.getText().toString(),
+                        guardarPrograma(programaId++, "Dom", hora,
                                 duracion, duracionPosicion, "A");
 
                         if (dias.isEmpty()) {
@@ -286,7 +290,7 @@ public class DetalleProgramaActivity extends AppCompatActivity {
                     dias = "";
                     programaModificar.setDuracion(duracion);
                     programaModificar.setDuracionPosicion(duracionPosicion);
-                    programaModificar.setHora(txtHsComienzo.getText().toString());
+                    programaModificar.setHora(hora);
                     programaModificar.setActivo("A");
 
                     //Preparar logica que lea todos los dias si estan chequeados y que los vaya guardando
@@ -371,7 +375,7 @@ public class DetalleProgramaActivity extends AppCompatActivity {
                     }
                 }
 
-                String datosEnviar = dias + ";" + txtHsComienzo.getText().toString() + ";" +
+                String datosEnviar = dias + ";" + hora + ";" +
                         duracion + ";A";
 
                 //hiloConectado.write(datosEnviar);
@@ -475,7 +479,10 @@ public class DetalleProgramaActivity extends AppCompatActivity {
             deshabilitarChecks(7);
         }
 
-        txtHsComienzo.setText(hora);
+        String [] arrayHora = hora.split(":");
+
+        txtHsComienzo.setText(arrayHora[0]);
+        txtMinComienzo.setText(arrayHora[1]);
         spinTiempoRiego.setSelection(duracionPosicion);
     }
 
