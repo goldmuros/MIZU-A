@@ -71,22 +71,29 @@ public class ListaProgramasActivity extends AppCompatActivity {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        /* Posibilidad de mostrar mensaje de lista vacia, no funciona , hay que testearlo mas
+        if (programas==null || programas.isEmpty()) {
+            TextView vacio = (TextView) findViewById(R.id.emptyListView);
+            listaProgramas.setEmptyView(vacio);
+        }
+        else  {
+        */
+            //Obtenemos los datos de la BD
+            listaProgramas.setAdapter(new ProgramaAdapter(programas));
 
-        //Obtenemos los datos de la BD
-        listaProgramas.setAdapter(new ProgramaAdapter(programas));
+            listaProgramas.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int posicion, long id) {
+                    Programa programa = (Programa) listaProgramas.getItemAtPosition(posicion);
 
-        listaProgramas.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int posicion, long id) {
-                Programa programa = (Programa) listaProgramas.getItemAtPosition(posicion);
+                    Intent detalle = new Intent(ListaProgramasActivity.this, DetalleProgramaActivity.class);
+                    detalle.putExtra("id", programa.getId());
+                    detalle.putExtra("ACCION","M");
 
-                Intent detalle = new Intent(ListaProgramasActivity.this, DetalleProgramaActivity.class);
-                detalle.putExtra("id", programa.getId());
-                detalle.putExtra("ACCION","M");
-
-                startActivity(detalle);
-            }
-        });
+                    startActivity(detalle);
+                }
+            });
+        //}
 
         //Obtenemos los parametros del activity/pantalla anterior (ListaDispositivosActivity)
         nombreBluetooth = getIntent().getExtras().getString("nombreBluetooth");

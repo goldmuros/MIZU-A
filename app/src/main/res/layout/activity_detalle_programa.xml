@@ -1,21 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?><!--Hay que refactorizar estos elemento y ponerlos en un fragmento-->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
-
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?attr/colorPrimary"
-        android:theme="?attr/actionBarTheme">
-
-        <TextView
-            android:id="@+id/textoNombreDispositivo"
-            android:layout_width="150dp"
-            android:layout_height="wrap_content" />
-    </android.support.v7.widget.Toolbar>
+    android:background="#3f51b5"
+    android:orientation="vertical"
+    android:weightSum="1">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -27,26 +17,38 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="2"
-            android:orientation="horizontal">
+            android:orientation="horizontal" android:background="@drawable/rounder_corner">
 
             <TextView
                 android:layout_width="150dp"
                 android:layout_height="wrap_content"
-                android:text="@string/EncendidoManual" />
+                android:text="@string/EncendidoManual"
+                android:textColor="#000000" />
 
-            <Button
-                android:id="@+id/btnEncender"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/Encender" />
 
-            <Button
-                android:id="@+id/btnApagar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/Apagar" />
+            <Switch
+                android:id="@+id/switchButtonManual"
+
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:allowUndo="false"
+                android:background="#3f51b5"
+                android:checked="false"
+                android:shadowColor="@color/colorPrimaryDark"
+                android:showText="true"
+                android:splitTrack="true"
+                android:textIsSelectable="false"
+                android:textOff="Apagado"
+                android:textOn="Encendido"
+                android:theme="@style/SCBSwitch"
+                android:thumb="@drawable/apptheme_switch_inner_holo_light"
+                tools:checked="false" />
+
+            <TextView
+                android:id="@+id/textViewManual"
+                android:layout_width="49dp"
+                android:layout_height="wrap_content" />
+
         </LinearLayout>
 
         <LinearLayout
@@ -59,55 +61,64 @@
                 android:id="@+id/txtDia"
                 android:layout_width="150dp"
                 android:layout_height="wrap_content"
-                android:text="@string/Dia" />
+                android:text="@string/Dia"
+                android:textColor="#ffffff" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="7"
-                android:orientation="horizontal">
+                android:orientation="horizontal" >
+
+                <TextView
+                    style="@style/SCBSwitch"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Lun"
+                    android:textColor="#ffffff" />
 
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Lun" />
+                    android:text="Mar"
+                    android:textColor="#ffffff" />
 
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Mar" />
+                    android:text="Mie"
+                    android:textColor="#ffffff" />
 
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Mie" />
+                    android:text="Jue"
+                    android:textColor="#ffffff" />
 
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Jue" />
+                    android:text="Vie"
+                    android:textColor="#ffffff" />
 
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Vie" />
+                    android:text="Sab"
+                    android:textColor="#ffffff" />
 
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Sab" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Dom" />
+                    android:text="Dom"
+                    android:textColor="#ffffff" />
             </LinearLayout>
 
             <LinearLayout
@@ -120,7 +131,8 @@
                     android:id="@+id/chbLun"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1" />
+                    android:layout_weight="1"
+                    android:theme="@style/SCBSwitch" />
 
                 <CheckBox
                     android:id="@+id/chbMar"
@@ -162,14 +174,15 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="6"
+                android:background="@drawable/rounder_corner"
                 android:orientation="horizontal">
 
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="3"
-                    android:text="Hora comienzo" />
+                    android:text="Hora comienzo"
+                    android:textColor="#000000" />
 
                 <EditText
                     android:id="@+id/txtHsComienzo"
@@ -196,19 +209,32 @@
                     android:maxLength="2"
                     android:selectAllOnFocus="true"
                     android:text="00" />
+
+
+
+                <Button
+                    android:id="@+id/pickTime"
+                    style="@style/Widget.AppCompat.Button"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="@android:drawable/ic_lock_idle_alarm"
+                    android:backgroundTint="@android:color/background_dark"
+                    android:elevation="0dp"
+                    android:visibility="visible" />
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
-                android:orientation="horizontal">
+                android:orientation="horizontal"  android:background="@drawable/rounder_corner">
 
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Tiempo de riego" />
+                    android:text="Tiempo de riego"
+                    android:textColor="#000000" />
 
                 <Spinner
                     android:id="@+id/spinTiempoRiego"
@@ -223,27 +249,40 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
-                android:orientation="horizontal">
+                android:orientation="horizontal"  android:background="@drawable/rounder_corner">
 
                 <TextView
-                    android:layout_width="0dp"
+                    android:layout_width="124dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Estado de Riego" />
+                    android:layout_weight="0.00"
+                    android:text="Estado de Riego"
+                    android:textColor="#000000" />
 
-                <Button
-                    android:id="@+id/btnActivoProgramaDetalle"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Activo" />
 
-                <Button
-                    android:id="@+id/btnSuspenderrogramaDetalle"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Suspender" />
+                <Switch
+                    android:id="@+id/switchButtonEstadoRiego"
+
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:background="#3f51b5"
+                    android:checked="true"
+                    android:maxWidth="@dimen/activity_horizontal_margin"
+                    android:shadowColor="@color/colorPrimaryDark"
+                    android:showText="true"
+                    android:splitTrack="true"
+                    android:switchMinWidth="@dimen/activity_vertical_margin"
+                    android:textAlignment="center"
+                    android:textIsSelectable="false"
+                    android:textOff="Suspendido"
+                    android:textOn="Activo"
+                    android:theme="@style/MySwitch"
+                    android:thumb="@drawable/apptheme_switch_inner_holo_light" />
+
+                <TextView
+                    android:id="@+id/textViewEstadoRiego"
+                    android:layout_width="70dp"
+                    android:layout_height="wrap_content" />
+
             </LinearLayout>
 
             <LinearLayout
@@ -252,27 +291,46 @@
                 android:layout_weight="3"
                 android:orientation="horizontal">
 
-                <Button
-                    android:id="@+id/btnEliminarProgramaDetalle"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Eliminar" />
 
-                <Button
-                    android:id="@+id/btnCancelarDetalle"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Cancelar" />
-
-                <Button
-                    android:id="@+id/btnAceptarDetalle"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Aceptar" />
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:minHeight="22dp"
+        android:theme="?attr/actionBarTheme">
+
+        <Button
+            android:id="@+id/btnEliminarProgramaDetalle"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/btn_selector"
+            android:text="Eliminar"
+            android:textColor="#ffffff" />
+
+        <Button
+            android:id="@+id/btnCancelarDetalle"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/btn_selector"
+            android:text="Cancelar"
+            android:textColor="#ffffff" />
+
+        <Button
+            android:id="@+id/btnAceptarDetalle"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/btn_selector"
+            android:text="Aceptar"
+            android:textColor="#ffffff" />
+    </android.support.v7.widget.Toolbar>
+
+
 </LinearLayout>

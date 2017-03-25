@@ -200,11 +200,11 @@ public class ListaDispositivosActivity extends AppCompatActivity {
         if (dispositivosVinculados.size() > 0) {
             for (BluetoothDevice dispositivo : dispositivosVinculados) {
                 //Habiliitar cuando se tenga un mizu cerca
-                if (dispositivo.getName().contains("MIZU")) {
+                //if (dispositivo.getName().contains("MIZU")) {
                     dispositivosVinculadosArrayAdapter.add(dispositivo.getName());
                     //Para obtener los datos del dispositivo sin necesidad de ponerlos en la lista
                     arrayDispositivosVincuados.add(dispositivo);
-                }
+                //}
             }
         } else {
             String noHayDispositivos = getResources().getText(R.string.no_vinculados).toString();

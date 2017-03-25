@@ -51,4 +51,7 @@
         <item>1 hs 30 min</item>
         <item>2 hs</item>
     </string-array>
+
+    <string name="emptyList">Lista vacia</string>
+
 </resources>

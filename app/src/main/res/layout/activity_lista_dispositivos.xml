@@ -21,7 +21,8 @@
             android:id="@+id/btnBluetooth"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/Conectar" />
+            android:text="@string/Conectar"
+            android:background="@drawable/btn_selector"/>
     </android.support.v7.widget.Toolbar>
 
     <LinearLayout
@@ -33,17 +34,23 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/ListaVinculados" />
+            android:text="@string/ListaVinculados"  android:background="@drawable/rounder_corner"/>
 
         <ListView
             android:id="@+id/listaDispositivosVinculados"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:background="@drawable/rounder_corner"
+            android:entries="@drawable/borde_redondo"
+            android:scrollbars="vertical"
+            android:textFilterEnabled="false"
+            android:touchscreenBlocksFocus="false" />
     </LinearLayout>
 
     <Button
         android:id="@+id/btnSalir"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/Salir" />
+        android:text="@string/Salir"
+        android:background="@drawable/btn_selector"/>
 </LinearLayout>
