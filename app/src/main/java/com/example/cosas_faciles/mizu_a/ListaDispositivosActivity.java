@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothSocket;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -12,23 +13,21 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Set;
+import java.util.UUID;
 
-
-/**
- * Created by Durgrim on 4/12/2016.
- */
 
 public class ListaDispositivosActivity extends AppCompatActivity {
     //Variables globales
@@ -36,17 +35,12 @@ public class ListaDispositivosActivity extends AppCompatActivity {
     private LinearLayout layoutDispositivosVinculados;
     private ListView listaDispositivosVinculados;
     private Button btnSalir, btnBluetooth;
-
+    private BluetoothSocket btSocket = null;
     //Otros objetos
     private BluetoothAdapter btAdapter = null;
     private Set<BluetoothDevice> dispositivosVinculados;
-
     private ArrayAdapter<String> dispositivosVinculadosArrayAdapter;
-
     private ArrayList<BluetoothDevice> arrayDispositivosVincuados = new ArrayList<>();
-
-    private ProgressDialog progresoVinculando;//Mensaje para buscar dispositivos
-
     // Instanciamos un BroadcastReceiver que se encargara de detectar si el estado
     // del Bluetooth del dispositivo ha cambiado mediante su handler onReceive
     private final BroadcastReceiver bReceiver = new BroadcastReceiver() {
@@ -92,20 +86,18 @@ public class ListaDispositivosActivity extends AppCompatActivity {
                 default:
                     break;
             }
-
         } // Fin onReceive
     };
+
+    //Es para la conexion async, borrar si no se usa
+    private ProgressDialog progresoConexion;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         //Cargamos el layout de donde se van a tomar los elementos de la vista
         setContentView(R.layout.activity_lista_dispositivos);
-
-        //Definimos la toolbar
-//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-//        setSupportActionBar(toolbar);
 
         configurarControles();
 
@@ -165,29 +157,27 @@ public class ListaDispositivosActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int posicion, long id) {
 
-                BluetoothDevice dispositivo = (BluetoothDevice) arrayDispositivosVincuados.get(posicion);
+                BluetoothDevice dispositivo = arrayDispositivosVincuados.get(posicion);
 
-                Toast.makeText(ListaDispositivosActivity.this,
-                        "Nombre " + dispositivo.getName() + " Direccion: " + dispositivo.getAddress(), Toast.LENGTH_SHORT).show();
-
+                conectarBT(dispositivo);
+                
                 //Preparamos los parametros para pasarselos al siguiente activity(pantalla)
                 Intent intent = new Intent(ListaDispositivosActivity.this, ListaProgramasActivity.class);
                 intent.putExtra("nombreBluetooth", dispositivo.getName());
-                intent.putExtra("direccionMAC", dispositivo.getAddress());
 
                 startActivity(intent);
             }
         });
     }
 
-    private void pairDevice(BluetoothDevice device) {
+    /*private void pairDevice(BluetoothDevice device) {
         try {
             Method method = device.getClass().getMethod("createBond", (Class[]) null);
             method.invoke(device, (Object[]) null);
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
+    }*/
 
     //Busca y carga en la lista los dispostivos que estan vinculados
     private void buscarDispositivosVinculados() {
@@ -283,7 +273,7 @@ public class ListaDispositivosActivity extends AppCompatActivity {
     }
 
     /*Ademas de realizar la destruccion de la actividad, eliminamos el registro del
-    BroadcastReceiver.*/
+BroadcastReceiver.*/
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -296,8 +286,56 @@ public class ListaDispositivosActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
+    }
 
- /*       if(bReceiver != null)
-            this.unregisterReceiver(bReceiver);*/
+    //Realiza la conexion con el Bluetooth
+    private synchronized void conectarBT(BluetoothDevice dispositivo) {
+        progresoConexion = ProgressDialog.show(ListaDispositivosActivity.this,
+                getString(R.string.Conexion), getString(R.string.Espere));  //show a progress dialog
+
+        Toast.makeText(ListaDispositivosActivity.this,
+                "Nombre " + dispositivo.getName() + " Direccion: " + dispositivo.getAddress(), Toast.LENGTH_SHORT).show();
+
+        try {
+            btSocket = crearBluetoothSocket(dispositivo);
+
+
+        } catch (IOException e) {
+            Toast.makeText(getBaseContext(), "La creacción del Socket fallo", Toast.LENGTH_LONG).show();
+        }
+
+        // Establecemos la conexion Bluetooth socket
+        try {
+            btSocket.connect();
+        } catch (IOException e) {
+            try {
+                btSocket.close();
+                Log.println(Log.ERROR, "hola", e.getMessage());
+                progresoConexion.dismiss();
+                finish();
+            } catch (IOException e2) {
+                //insert code to deal with this
+                progresoConexion.dismiss();
+            }
+        }
+
+        //Asociamos el hilo con el socket
+        try {
+            ConnectedThread hiloConectado = new ConnectedThread(btSocket);
+            hiloConectado.start();//Lo iniciamos
+
+            progresoConexion.dismiss();
+
+            //Seteamos la conexion
+            Singleton.getInstance().setConnectedThread(hiloConectado);
+        } catch (Exception e) {
+            Log.println(Log.ERROR, "hola2", e.getMessage());
+        }
+    }
+
+    private BluetoothSocket crearBluetoothSocket(BluetoothDevice device) throws IOException {
+        UUID BTMODULEUUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
+        //Creamos una conexion segura con el Bluetooth usando el UUID
+        return device.createInsecureRfcommSocketToServiceRecord(BTMODULEUUID);
     }
 }

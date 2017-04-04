@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import java.sql.SQLException;
 
@@ -28,7 +29,8 @@ public class DetalleProgramaActivity extends AppCompatActivity {
     //Variables
     private String duracion;
     private int duracionPosicion;
-    //private ConnectedThread hiloConectado;
+    private static String nombreBluetooth;
+    private ConnectedThread hiloConectado;
     private Programa programaModificar;
     private String accion;
 
@@ -39,7 +41,7 @@ public class DetalleProgramaActivity extends AppCompatActivity {
         setContentView(R.layout.activity_detalle_programa);
 
         //Recuperamos el objeto de conexion con el BT
-        //hiloConectado = (ConnectedThread) getIntent().getSerializableExtra("BT");
+        hiloConectado = Singleton.getInstance().getConnectedThread();
 
         //Botones
         btAceptar = (Button) findViewById(R.id.btnAceptarDetalle);
@@ -68,6 +70,12 @@ public class DetalleProgramaActivity extends AppCompatActivity {
 
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinTiempoRiego.setAdapter(adapter);
+
+        //Nombre del Bluetooth
+        nombreBluetooth = getIntent().getExtras().getString("nombreBluetooth");
+
+        TextView txtNombreDispositivo = (TextView) findViewById(R.id.txtNombreDispositivo);
+        txtNombreDispositivo.setText(nombreBluetooth);
 
         btCancelar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -201,6 +209,7 @@ public class DetalleProgramaActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String dias = "";
+                String posicion = "";
                 int programaId = 0;
 
                 try {
@@ -384,6 +393,7 @@ public class DetalleProgramaActivity extends AppCompatActivity {
                             duracion + ";A";
 
                     //hiloConectado.write(datosEnviar);
+                    hiloConectado.write("H");
 
                     onBackPressed();
                 }

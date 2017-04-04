@@ -15,13 +15,10 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.List;
@@ -39,7 +36,6 @@ public class ListaProgramasActivity extends AppCompatActivity {
     private static UUID BTMODULEUUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
     //Otras variables
     private static String nombreBluetooth;
-    private static String direccionMAC;
     //Objetos de la pantalla
     private Button btEncender, btApagar, btBorrarPrograma, btAnadirPrograma;
     //private CheckBox chbPrograma; por el momento lo comentamos
@@ -83,6 +79,7 @@ public class ListaProgramasActivity extends AppCompatActivity {
                 Intent detalle = new Intent(ListaProgramasActivity.this, DetalleProgramaActivity.class);
                 detalle.putExtra("id", programa.getId());
                 detalle.putExtra("ACCION","M");
+                detalle.putExtra("nombreBluetooth", nombreBluetooth);
 
                 startActivity(detalle);
             }
@@ -90,17 +87,20 @@ public class ListaProgramasActivity extends AppCompatActivity {
 
         //Obtenemos los parametros del activity/pantalla anterior (ListaDispositivosActivity)
         nombreBluetooth = getIntent().getExtras().getString("nombreBluetooth");
-        direccionMAC = getIntent().getExtras().getString("direccionMAC");
 
-        TextView textViewNombreDispositivo = (TextView) findViewById(R.id.textoNombreDispositivo);
+        //Recuperamos el objeto de conexion con el BT
+        hiloConectado = Singleton.getInstance().getConnectedThread();
 
-        textViewNombreDispositivo.setText(nombreBluetooth);
+        TextView txtNombreDispositivo = (TextView) findViewById(R.id.txtNombreDispositivo);
+
+        txtNombreDispositivo.setText(nombreBluetooth);
 
         btEncender = (Button) findViewById(R.id.btnEncender);
         btEncender.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 //Encendemos el regador
                 hiloConectado.write("H");
+                //conexion.write("H");
                 Toast.makeText(ListaProgramasActivity.this,
                         "ENCENDIDO", Toast.LENGTH_SHORT).show();
             }
@@ -111,6 +111,7 @@ public class ListaProgramasActivity extends AppCompatActivity {
             public void onClick(View v) {
                 //Apagamos el regador
                 hiloConectado.write("L");
+                //conexion.write("H");
                 Toast.makeText(ListaProgramasActivity.this,
                         "APAGADO", Toast.LENGTH_SHORT).show();
             }
@@ -125,7 +126,7 @@ public class ListaProgramasActivity extends AppCompatActivity {
                 Intent intent  = new Intent(ListaProgramasActivity.this, DetalleProgramaActivity.class);
 
                 intent.putExtra("ACCION","A");
-                intent.putExtra("BT", (Serializable) hiloConectado);
+                intent.putExtra("nombreBluetooth", nombreBluetooth);
 
                 startActivity(intent);
             }
@@ -150,7 +151,6 @@ public class ListaProgramasActivity extends AppCompatActivity {
         });*/
 
         btAdapter = BluetoothAdapter.getDefaultAdapter();
-        //checkBTState();
     }
 
     public void conectarDispositivo(String direccion) {
@@ -164,34 +164,18 @@ public class ListaProgramasActivity extends AppCompatActivity {
 
     @Override
     protected void onResume() {
-        super.onResume();
 
-        /*List<Programa> programas = null;
-        try {
-            programas = (List<Programa>) ProgramaFactory.getInstance(ListaProgramasActivity.this).obtenerProductos();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        //Obtenemos los datos de la BD
-        listaProgramas.setAdapter(new ProgramaAdapter(programas));
-*/
         super.onResume();
         try {
             ((ProgramaAdapter)listaProgramas.getAdapter()).setProgramas(ProgramaFactory.getInstance(this).obtenerProgramas());
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
-        //Se realiza la conexion con el BT
-        //conectarBT();
     }
 
     @Override
     public void onPause() {
         super.onPause();
-
-        //desconectarBT();
     }
 
     private BluetoothSocket crearBluetoothSocket(BluetoothDevice device) throws IOException {
@@ -222,40 +206,6 @@ public class ListaProgramasActivity extends AppCompatActivity {
 
         UUID uuid = new UUID(androidId.hashCode(), ((long) deviceId.hashCode() << 32) | simSerialNumber.hashCode());
         return uuid;
-    }
-
-    //Realiza la conexion con el Bluetooth
-    private void conectarBT() {
-        progresoConexion = ProgressDialog.show(ListaProgramasActivity.this, getString(R.string.Conexion), getString(R.string.Espere));  //show a progress dialog
-        //Se crea un dispostivo y se le setea la dirección MAC
-        BluetoothDevice dispositivo = btAdapter.getRemoteDevice(direccionMAC);
-
-        try {
-            btSocket = crearBluetoothSocket(dispositivo);
-        } catch (IOException e) {
-            Toast.makeText(getBaseContext(), "La creacción del Socket fallo", Toast.LENGTH_LONG).show();
-        }
-
-        // Establecemos la conexion Bluetooth socket
-        try {
-            btSocket.connect();
-        } catch (IOException e) {
-            try {
-                btSocket.close();
-                Log.println(Log.ERROR, "hola", e.getMessage());
-                progresoConexion.dismiss();
-                finish();
-            } catch (IOException e2) {
-                //insert code to deal with this
-                progresoConexion.dismiss();
-            }
-        }
-
-        //Asociamos el hilo con el socket
-        hiloConectado = new ConnectedThread(btSocket);
-        hiloConectado.start();//Lo iniciamos
-
-        progresoConexion.dismiss();
     }
 
     private void desconectarBT() {

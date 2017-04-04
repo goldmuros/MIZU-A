@@ -1,6 +1,7 @@
 package com.example.cosas_faciles.mizu_a;
 
 import android.bluetooth.BluetoothSocket;
+import android.util.Log;
 import android.widget.Toast;
 
 import java.io.IOException;
@@ -38,7 +39,7 @@ public class ConnectedThread extends Thread {
             mmOutStream.write(msgBuffer);//Envia bytes atravez de la conexion BT via outstream
         } catch (IOException e) {
             //Excepsion
-            //Toast.makeText(getBaseContext(), "La Conexión fallo", Toast.LENGTH_LONG).show();
+            Log.println(Log.ERROR, "hola2", e.getMessage());
         }
     }
 }
