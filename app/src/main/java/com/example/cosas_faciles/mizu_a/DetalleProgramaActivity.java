@@ -1,19 +1,32 @@
 package com.example.cosas_faciles.mizu_a;
 
+import android.app.Dialog;
+import android.app.TimePickerDialog;
+import android.app.Dialog;
+import android.app.TimePickerDialog;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Switch;
+import android.widget.TextView;
+import android.widget.TimePicker;
+import android.widget.Toast;
 
 import java.sql.SQLException;
+import java.util.Calendar;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Created by Durgrim on 21/2/2017.
@@ -21,7 +34,7 @@ import java.sql.SQLException;
 
 public class DetalleProgramaActivity extends AppCompatActivity {
     //Objetos de la pantalla
-    private Button btAceptar, btCancelar, btEliminar, btActivo, btSuspender;
+    private Button btAceptar, btCancelar, btEliminar;//, btActivo, btSuspender;
     private CheckBox chbLun, chbMar, chbMie, chbJue, chbVie, chbSab, chbDom;
     private EditText txtHsComienzo, txtMinComienzo;
     private Spinner spinTiempoRiego;
@@ -33,6 +46,78 @@ public class DetalleProgramaActivity extends AppCompatActivity {
     private ConnectedThread hiloConectado;
     private Programa programaModificar;
     private String accion;
+
+    /** Variables para el reloj*/
+    private Button pickTime;
+    private int pHour;
+    private int pMinute;
+    /** This integer will uniquely define the dialog to be used for displaying time picker.*/
+    static final int TIME_DIALOG_ID = 0;
+
+    /*Switch button Encendido Manual*/
+    Switch switchButtonManual, switchButtonEstadoRiego;
+    TextView textViewManual;
+    TextView textViewEstadoRiego;
+    String switchOnManual = "Encendido";
+    String switchOffManual = "Apagado";
+    String switchOnEstadoRiego = "Activo";
+    String switchOffEstadoRiego = "Suspendido";
+
+
+    @Override
+    protected void onPostCreate(@Nullable Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+    }
+
+
+
+
+    /**
+     * RELOJ
+     * Callback received when the user "picks" a time in the dialog */
+    private TimePickerDialog.OnTimeSetListener mTimeSetListener =
+            new TimePickerDialog.OnTimeSetListener() {
+                public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                    pHour = hourOfDay;
+                    pMinute = minute;
+                    updateDisplay();
+                    displayToast();
+                }
+            };
+
+    /**
+     * RELOJ
+     * Updates the time in the TextView */
+    private void updateDisplay() {
+        txtHsComienzo.setText(pad(pHour));
+        txtMinComienzo.setText(pad(pMinute));
+        //displayTime.setText(
+         //       new StringBuilder()
+         //               .append(pad(pHour)).append(":")
+         //               .append(pad(pMinute)));
+    }
+
+    /**
+     * RELOJ
+     * Displays a notification when the time is updated */
+    private void displayToast() {
+        String displayTime = txtHsComienzo.getText() + ":" + txtMinComienzo.getText();
+        Toast.makeText(this, new StringBuilder().append("Time choosen is ").append(displayTime),	Toast.LENGTH_SHORT).show();
+
+    }
+
+    /**
+     * RELOJ
+     * Add padding to numbers less than ten */
+    private static String pad(int c) {
+        if (c >= 10)
+            return String.valueOf(c);
+        else
+            return "0" + String.valueOf(c);
+    }
+
+
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -47,8 +132,8 @@ public class DetalleProgramaActivity extends AppCompatActivity {
         btAceptar = (Button) findViewById(R.id.btnAceptarDetalle);
         btEliminar = (Button) findViewById(R.id.btnEliminarProgramaDetalle);
         btCancelar = (Button) findViewById(R.id.btnCancelarDetalle);
-        btActivo = (Button) findViewById(R.id.btnActivoProgramaDetalle);
-        btSuspender = (Button) findViewById(R.id.btnSuspenderrogramaDetalle);
+        //btActivo = (Button) findViewById(R.id.btnActivoProgramaDetalle);
+        //btSuspender = (Button) findViewById(R.id.btnSuspenderrogramaDetalle);
 
         //Checkboxs
         chbLun = (CheckBox) findViewById(R.id.chbLun);
@@ -209,7 +294,6 @@ public class DetalleProgramaActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String dias = "";
-                String posicion = "";
                 int programaId = 0;
 
                 try {
@@ -393,7 +477,6 @@ public class DetalleProgramaActivity extends AppCompatActivity {
                             duracion + ";A";
 
                     //hiloConectado.write(datosEnviar);
-                    hiloConectado.write("H");
 
                     onBackPressed();
                 }
@@ -417,6 +500,158 @@ public class DetalleProgramaActivity extends AppCompatActivity {
                 duracionPosicion = 0;
             }
         });
+
+        /**Agregado reloj para seleccionar la hora de comienzo del programa */
+        addQuickTime();
+
+        /*Switch button Encendido Manual*/
+        //addSwitchWidgetManual();
+        //addSwitchWidget(R.id.switchButtonManual, R.id.textViewManual, switchOnManual, switchOffManual);
+        addSwitchWidgetManual();
+        /*Switch button Estado de Riego*/
+        //addSwitchWidgetEstadoRiego();
+
+        //addSwitchWidget(R.id.switchButtonEstadoRiego, R.id.textViewEstadoRiego, switchOnEstadoRiego, switchOffEstadoRiego);
+        addSwitchWidgetEstadoRiego();
+    }
+
+    /**
+     *
+     */
+    private void addQuickTime(){
+        /** Ini : agregado reloj dialogo para seleccionar la hora*/
+        /** Capture our View elements */
+        pickTime = (Button) findViewById(R.id.pickTime);
+
+        /** Listener for click event of the button */
+        pickTime.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                showDialog(TIME_DIALOG_ID);
+            }
+        });
+
+        /** Get the current time */
+        final Calendar cal = Calendar.getInstance();
+        pHour = cal.get(Calendar.HOUR_OF_DAY);
+        pMinute = cal.get(Calendar.MINUTE);
+
+        updateDisplay();
+        /** Display the current time in the TextView */
+    }
+
+    /**
+     * Funcionalidad Switch Manual
+     */
+    /**/
+    private void addSwitchWidgetManual(){
+        // For first switch button
+        switchButtonManual = (Switch) findViewById(  R.id.switchButtonManual);
+        //textViewManual = (TextView) findViewById(R.id.textViewManual);
+
+        switchButtonManual.setChecked(true);
+        switchButtonManual.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean bChecked) {
+                if (bChecked) {
+                    //textViewManual.setText(switchOnManual);
+                } else {
+                    //textViewManual.setText(switchOffManual);
+                }
+            }
+        });
+
+        if (switchButtonManual.isChecked()) {
+           // textViewManual.setText(switchOnManual);
+        } else {
+            //textViewManual.setText(switchOffManual);
+        }
+    }
+    /**/
+
+    /**
+     * Funcionalidad Switch Estado de Riego
+     */
+    /**/
+    private void addSwitchWidgetEstadoRiego(){
+        // For first switch button
+        switchButtonEstadoRiego = (Switch) findViewById( R.id.switchButtonEstadoRiego );
+        //textViewEstadoRiego = (TextView) findViewById(R.id.textViewEstadoRiego);
+
+        switchButtonEstadoRiego.setChecked(true);
+        switchButtonEstadoRiego.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean bChecked) {
+                if (bChecked) {
+                   // textViewEstadoRiego.setText(switchOnEstadoRiego);
+                } else {
+                   // textViewEstadoRiego.setText(switchOffEstadoRiego);
+                }
+            }
+        });
+
+        if (switchButtonEstadoRiego.isChecked()) {
+           /// textViewEstadoRiego.setText(switchOnEstadoRiego);
+        } else {
+           // textViewEstadoRiego.setText(switchOffEstadoRiego);
+        }
+
+   /*     int delay = 5000; // delay for 5 sec.
+        int period = 1000; // repeat every sec.
+
+        Timer timer = new Timer();
+        timer.scheduleAtFixedRate(new TimerTask()
+        {
+            public void run()
+            {
+                textViewEstadoRiego.setText("");
+
+            }
+        }, delay, period);
+        */
+    }
+    /**/
+
+    /**
+     * Funcionalidad Switch para
+     * Encendido Manual
+     * y
+     * Estado de Riego
+     */
+    /*
+    private void addSwitchWidget(int idSwicth, int idTexto, final String switchOn, final String switchOff){
+        // For first switch button
+        switchButton = (Switch) findViewById( idSwicth );
+        textView = (TextView) findViewById(idTexto);
+
+        switchButton.setChecked(true);
+        switchButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean bChecked) {
+                if (bChecked) {
+                    textView.setText(switchOn);
+                } else {
+                    textView.setText(switchOff);
+                }
+            }
+        });
+
+        if (switchButton.isChecked()) {
+            textView.setText(switchOn);
+        } else {
+            textView.setText(switchOff);
+        }
+    }
+    */
+    /** Create a new dialog for time picker */
+
+    @Override
+    protected Dialog onCreateDialog(int id) {
+        switch (id) {
+            case TIME_DIALOG_ID:
+                return new TimePickerDialog(this,
+                        mTimeSetListener, pHour, pMinute, false);
+        }
+        return null;
     }
 
     @Override

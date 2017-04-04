@@ -67,14 +67,20 @@ public class ListaProgramasActivity extends AppCompatActivity {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        /* Posibilidad de mostrar mensaje de lista vacia, no funciona , hay que testearlo mas
+        if (programas==null || programas.isEmpty()) {
+            TextView vacio = (TextView) findViewById(R.id.emptyListView);
+            listaProgramas.setEmptyView(vacio);
+        }
+        else  {
+        */
+            //Obtenemos los datos de la BD
+            listaProgramas.setAdapter(new ProgramaAdapter(programas));
 
-        //Obtenemos los datos de la BD
-        listaProgramas.setAdapter(new ProgramaAdapter(programas));
-
-        listaProgramas.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int posicion, long id) {
-                Programa programa = (Programa) listaProgramas.getItemAtPosition(posicion);
+            listaProgramas.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int posicion, long id) {
+                    Programa programa = (Programa) listaProgramas.getItemAtPosition(posicion);
 
                 Intent detalle = new Intent(ListaProgramasActivity.this, DetalleProgramaActivity.class);
                 detalle.putExtra("id", programa.getId());
@@ -100,7 +106,6 @@ public class ListaProgramasActivity extends AppCompatActivity {
             public void onClick(View v) {
                 //Encendemos el regador
                 hiloConectado.write("H");
-                //conexion.write("H");
                 Toast.makeText(ListaProgramasActivity.this,
                         "ENCENDIDO", Toast.LENGTH_SHORT).show();
             }
@@ -111,7 +116,6 @@ public class ListaProgramasActivity extends AppCompatActivity {
             public void onClick(View v) {
                 //Apagamos el regador
                 hiloConectado.write("L");
-                //conexion.write("H");
                 Toast.makeText(ListaProgramasActivity.this,
                         "APAGADO", Toast.LENGTH_SHORT).show();
             }

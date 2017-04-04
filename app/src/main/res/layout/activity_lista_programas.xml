@@ -30,7 +30,7 @@
             android:orientation="horizontal">
 
             <TextView
-                android:layout_width="150dp"
+                android:layout_width="131dp"
                 android:layout_height="wrap_content"
                 android:text="@string/EncendidoManual" />
 
@@ -39,14 +39,18 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/Encender" />
+                android:background="@drawable/btn_selector"
+                android:text="@string/Encender"
+                android:textColor="#ffffff" />
 
             <Button
                 android:id="@+id/btnApagar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/Apagar" />
+                android:background="@drawable/btn_selector"
+                android:text="@string/Apagar"
+                android:textColor="#ffffff" />
         </LinearLayout>
 
         <LinearLayout
@@ -57,15 +61,25 @@
 
             <TextView
                 android:id="@+id/txtListaProgramas"
-                android:layout_width="150dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@drawable/rounder_corner"
                 android:text="@string/ListaProgramas" />
 
             <!--Hay que refactorizar este elemento con un fragmento como el que esta abajo-->
             <ListView
                 android:id="@+id/listaProgramas"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content" android:background="@drawable/rounder_corner"/>
+
+            <TextView
+                android:id="@+id/emptyListView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone"
+                android:text="@string/emptyList" >
+            </TextView>
+
         </LinearLayout>
 
         <LinearLayout
@@ -78,7 +92,11 @@
                 android:id="@+id/btnAnadirPrograma"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Añadir" />
+
+                android:background="@drawable/btn_selector"
+                android:textColor="#ffffff"
+                android:text="Añadir"
+       />
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

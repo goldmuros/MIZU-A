@@ -8,4 +8,32 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="SCBSwitch" parent="Theme.AppCompat.Light">
+        <!-- active thumb & track color (30% transparency) -->
+        <item name="colorControlActivated">#46bdbf</item>
+
+        <!-- inactive thumb color -->
+        <item name="colorSwitchThumbNormal">#f1f1f1
+        </item>
+
+        <!-- inactive track color (30% transparency) -->
+        <item name="android:colorForeground">#42221f1f
+        </item>
+    </style>
+
+
+    <style name="MySwitch" parent="Theme.AppCompat.Light">
+        <!-- Color del _thumb_ activo y la pista (30% de transparencia) -->
+        <item name="colorControlActivated">@color/colorPrimary</item>
+
+        <!-- Color del _thumb_ inactivo -->
+        <item name="colorSwitchThumbNormal">@color/wallet_holo_blue_light</item>
+
+        <!-- Color de la pista inactiva (30% de transparencia) -->
+        <item name="android:colorForeground">@color/enable_thumb_green</item>
+    </style>
+
+    <style name="ThemeMizu" parent="android:Theme.Holo.Dialog.MinWidth" >
+        <item name="android:windowBackground">@color/colorAccent</item>
+    </style>
 </resources>
